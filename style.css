@@ -30,3 +30,4 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height
 .scroll-top { position: fixed; bottom: 20px; right: 20px; background: var(--primary-color); color: white; border: none; border-radius: 50%; width: 50px; height: 50px; display: none; align-items: center; justify-content: center; transition: all 0.3s ease; z-index: 1000; }
 .scroll-top:hover { background: var(--secondary-color); transform: translateY(-3px); }
 .faq-question { font-weight: 600; color: var(--secondary-color); }
+html {scroll-padding-top: calc(var(--navbar-height, 60px) + 10px);}
