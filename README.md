@@ -113,7 +113,7 @@
 Напишите нам прямо сейчас!
 
 - **Telegram: [@KGB_HoPe](https://t.me/KGB_HoPe)**
-- **Наш сайт-визитка:** [ссылка на ваш сайт на GitHub Pages]
+- **Наш сайт-визитка:** [Наш веб сайт](https://devone-hope.github.io/my_website/)
 
 ---
 
