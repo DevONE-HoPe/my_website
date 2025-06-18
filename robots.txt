@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /fontawesome-free-6.7.2-web/
+Disallow: /bootstrap-5.3.7-dist/
+
+Sitemap: https://../sitemap.xml
