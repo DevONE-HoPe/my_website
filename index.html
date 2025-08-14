@@ -29,6 +29,8 @@
     <link rel="stylesheet" href="fontawesome-free-6.7.2-web/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 
+    <link rel="stylesheet" href="glightbox/glightbox.min.css">
+
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WPL410C33Z"></script>
     <script>
@@ -256,7 +258,7 @@
         </div>
     </section>
 
-<section id="portfolio" class="py-5">
+    <section id="portfolio" class="py-5">
         <div class="container">
             <h2 class="section-title h1 fw-bold">Портфолио: примеры разработанных ТГ ботов & Парсеров</h2>
             <div class="row g-4">
@@ -399,6 +401,48 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Карточка 11: Парсер отзывов OZON -->
+                <div class="col-lg-4 col-md-6" data-aos="zoom-in" data-aos-delay="1000">
+                    <div class="card portfolio-card h-100" data-bs-toggle="modal" data-bs-target="#modal11">
+                        <div class="card-img-container" style="height: 200px; overflow: hidden;">
+                            <img src="ozon_parser.png" loading="lazy" class="card-img-top img-fluid w-100" alt="Парсер отзывов OZON портфолио">
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">Парсер отзывов OZON</h5>
+                            <p class="card-text flex-grow-1">Парсер отзывов с динамическим поиском элементов...</p>
+                            <button class="btn btn-primary mt-auto">Подробнее</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Карточка 12: Телеграм бот для отслеживания позиций товаров -->
+                <div class="col-lg-4 col-md-6" data-aos="zoom-in" data-aos-delay="1100">
+                    <div class="card portfolio-card h-100" data-bs-toggle="modal" data-bs-target="#modal12">
+                        <div class="card-img-container" style="height: 200px; overflow: hidden;">
+                            <img src="wb_tracking_bot.jpg" loading="lazy" class="card-img-top img-fluid w-100 h-100" alt="Телеграм бот для отслеживания позиций товаров портфолио" style="object-fit: cover; object-position: center;">
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">Телеграм бот для отслеживания позиций товаров</h5>
+                            <p class="card-text flex-grow-1">Бот для отслеживания позиций товаров на WB с уведомлениями...</p>
+                            <button class="btn btn-primary mt-auto">Подробнее</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Карточка 13: Внедрение системы платежей в бот для юнит экономики -->
+                <div class="col-lg-4 col-md-6" data-aos="zoom-in" data-aos-delay="1200">
+                    <div class="card portfolio-card h-100" data-bs-toggle="modal" data-bs-target="#modal13">
+                        <div class="card-img-container" style="height: 200px; overflow: hidden;">
+                            <img src="payment_system_bot.png" loading="lazy" class="card-img-top img-fluid w-100 h-100" alt="Внедрение системы платежей в бот портфолио" style="object-fit: cover; object-position: center;">
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">Внедрение системы платежей в бот для юнит экономики</h5>
+                            <p class="card-text flex-grow-1">Настройка платежной системы для бота расчета экономики WB...</p>
+                            <button class="btn btn-primary mt-auto">Подробнее</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -413,7 +457,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <img src="ai_chat.png" class="img-fluid mb-3" alt="ИИ агент">
+                    <a href="ai_chat.png" class="glightbox" data-gallery="portfolio" data-title="ИИ агент, чат на сайте">
+                        <img src="ai_chat.png" class="img-fluid mb-3" alt="ИИ агент">
+                    </a>
                     <div class="mb-3">
                         <span class="badge bg-success fs-6">Цена: 650,000 ₽</span>
                     </div>
@@ -444,7 +490,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <img src="bot_ai_photo_generate.jpg" class="img-fluid mb-3" alt="Телеграм бот для генерации фото">
+                    <a href="bot_ai_photo_generate.jpg" class="glightbox" data-gallery="portfolio" data-title="Телеграм бот для генерации фото. Цена: 30,000 ₽. Технологии: Python, Genai, aiohttp, PostgreSQL, Redis.">
+                        <img src="bot_ai_photo_generate.jpg" class="img-fluid mb-3" alt="Телеграм бот для генерации фото">
+                    </a>
                     <div class="mb-3">
                         <span class="badge bg-success fs-6">Цена: 30,000 ₽</span>
                     </div>
@@ -476,7 +524,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <img src="parse_casino.png" class="img-fluid mb-3" alt="Парсер казино">
+                    <a href="parse_casino.png" class="glightbox" data-gallery="portfolio" data-title="Парсер казино. Цена: 25,000 ₽. Технологии: Python, RSocket, PostgreSQL.">
+                        <img src="parse_casino.png" class="img-fluid mb-3" alt="Парсер казино">
+                    </a>
                     <div class="mb-3">
                         <span class="badge bg-success fs-6">Цена: 25,000 ₽</span>
                     </div>
@@ -506,7 +556,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <img src="bot_ai_generate.jpg" class="img-fluid mb-3" alt="Телеграм бот чат с ИИ">
+                    <a href="bot_ai_generate.jpg" class="glightbox" data-gallery="portfolio" data-title="Телеграм бот чат с ИИ. Цена: 40,000 ₽. Технологии: Python, aiogram, PostgreSQL, Genai.">
+                        <img src="bot_ai_generate.jpg" class="img-fluid mb-3" alt="Телеграм бот чат с ИИ">
+                    </a>
                     <div class="mb-3">
                         <span class="badge bg-success fs-6">Цена: 40,000 ₽</span>
                     </div>
@@ -537,7 +589,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <img src="start.png" class="img-fluid mb-3" alt="Телеграм бот с ИИ для ведения канала">
+                    <a href="start.png" class="glightbox" data-gallery="portfolio" data-title="Телеграм бот с ИИ для ведения канала. Цена: По договоренности. Технологии: Python, Telegram API, AI/ML.">
+                        <img src="start.png" class="img-fluid mb-3" alt="Телеграм бот с ИИ для ведения канала">
+                    </a>
                     <div class="mb-3">
                         <span class="badge bg-warning text-dark fs-6">Цена: По договоренности</span>
                     </div>
@@ -567,7 +621,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <img src="parse_hh_tg_bot.jpg" class="img-fluid mb-3" alt="Парсер HH">
+                    <a href="parse_hh_tg_bot.jpg" class="glightbox" data-gallery="portfolio" data-title="Парсер HH в телеграм. Цена: 30,000 ₽. Технологии: Python, aiogram, PostgreSQL.">
+                        <img src="parse_hh_tg_bot.jpg" class="img-fluid mb-3" alt="Парсер HH">
+                    </a>
                     <div class="mb-3">
                         <span class="badge bg-success fs-6">Цена: 30,000 ₽</span>
                     </div>
@@ -597,7 +653,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <img src="profi_funpay.png" class="img-fluid mb-3" alt="Парсер FunPay">
+                    <a href="profi_funpay.png" class="glightbox" data-gallery="portfolio" data-title="Парсер FunPay. Цена: По договоренности. Технологии: Python, Web Scraping, CSV.">
+                        <img src="profi_funpay.png" class="img-fluid mb-3" alt="Парсер FunPay">
+                    </a>
                     <div class="mb-3">
                         <span class="badge bg-warning text-dark fs-6">Цена: По договоренности</span>
                     </div>
@@ -627,7 +685,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <img src="cpp_chat.jpg" class="img-fluid mb-3" alt="Чат на C++">
+                    <a href="cpp_chat.jpg" class="glightbox" data-gallery="portfolio" data-title="Чат на C++. Цена: 50,000 ₽. Технологии: C++, Криптография, Сокеты.">
+                        <img src="cpp_chat.jpg" class="img-fluid mb-3" alt="Чат на C++">
+                    </a>
                     <div class="mb-3">
                         <span class="badge bg-success fs-6">Цена: 50,000 ₽</span>
                     </div>
@@ -657,7 +717,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <img src="faceebok_market.png" class="img-fluid mb-3" alt="Парсер Facebook Marketplace">
+                    <a href="faceebok_market.png" class="glightbox" data-gallery="portfolio" data-title="Парсер Facebook Marketplace. Цена: По договоренности. Технологии: Python, Web Scraping, CSV.">
+                        <img src="faceebok_market.png" class="img-fluid mb-3" alt="Парсер Facebook Marketplace">
+                    </a>
                     <div class="mb-3">
                         <span class="badge bg-warning text-dark fs-6">Цена: По договоренности</span>
                     </div>
@@ -687,7 +749,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <img src="amazon_parse.png" class="img-fluid mb-3" alt="Парсер Amazon">
+                    <a href="amazon_parse.png" class="glightbox" data-gallery="portfolio" data-title="Парсер Amazon. Цена: По договоренности. Технологии: Python, Selenium, CSV.">
+                        <img src="amazon_parse.png" class="img-fluid mb-3" alt="Парсер Amazon">
+                    </a>
                     <div class="mb-3">
                         <span class="badge bg-warning text-dark fs-6">Цена: По договоренности</span>
                     </div>
@@ -698,6 +762,107 @@
                             <span class="badge bg-secondary me-1">Python</span>
                             <span class="badge bg-secondary me-1">Selenium</span>
                             <span class="badge bg-secondary me-1">CSV</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модаль 11: Парсер отзывов OZON -->
+    <div class="modal fade" id="modal11" tabindex="-1" aria-labelledby="modal11Label" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal11Label">Парсер отзывов OZON</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <a href="ozon_parser.png" class="glightbox" data-gallery="portfolio" data-title="Парсер отзывов OZON. Цена: 20,000 ₽. Технологии: Python, Chromium, Web Scraping.">
+                        <img src="ozon_parser.png" class="img-fluid mb-3" alt="Парсер отзывов OZON">
+                    </a>
+                    <div class="mb-3">
+                        <span class="badge bg-success fs-6">Цена: 20,000 ₽</span>
+                    </div>
+                    <p>Использовал chromium движок браузера, сам сайт OZON довольно сложный. И элементы сайта собираются динамически, парсер работает не по полному/относительному xpath, а сам находит нужные элементы внутри определенного статичного тега.</p>
+                    <div class="mt-3">
+                        <strong>Технологии:</strong>
+                        <div class="mt-2">
+                            <span class="badge bg-secondary me-1">Python</span>
+                            <span class="badge bg-secondary me-1">Chromium</span>
+                            <span class="badge bg-secondary me-1">Web Scraping</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модаль 12: Телеграм бот для отслеживания позиций товаров -->
+    <div class="modal fade" id="modal12" tabindex="-1" aria-labelledby="modal12Label" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal12Label">Телеграм бот для отслеживания позиций товаров</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <a href="wb_tracking_bot.jpg" class="glightbox" data-gallery="portfolio" data-title="Телеграм бот для отслеживания позиций товаров. Цена: 30,000 ₽. Технологии: Python, aiogram, aiohttp, SQLite, WB API.">
+                        <img src="wb_tracking_bot.jpg" class="img-fluid mb-3" alt="Телеграм бот для отслеживания позиций товаров">
+                    </a>
+                    <div class="mb-3">
+                        <span class="badge bg-warning text-dark fs-6">Цена: 30,000 ₽</span>
+                    </div>
+                    <p>Телеграм бот для оповещения о том что товар, опустился ниже указанной позиции. Можно создавать публичные товары, тогда оповещение будет приходить всем пользователям в боте, и также есть возможность создать личные товары на отслеживание. Оповещения приходят в группу, работает бот используя внутренний API WB.</p>
+                    <div class="mt-3">
+                        <strong>Технологии:</strong>
+                        <div class="mt-2">
+                            <span class="badge bg-secondary me-1">Python</span>
+                            <span class="badge bg-secondary me-1">aiogram</span>
+                            <span class="badge bg-secondary me-1">aiohttp</span>
+                            <span class="badge bg-secondary me-1">SQLite</span>
+                            <span class="badge bg-secondary me-1">WB API</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модаль 13: Внедрение системы платежей в бот для юнит экономики -->
+    <div class="modal fade" id="modal13" tabindex="-1" aria-labelledby="modal13Label" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal13Label">Внедрение системы платежей в бот для юнит экономики</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <a href="payment_system_bot.png" class="glightbox" data-gallery="portfolio" data-title="Внедрение системы платежей в бот для юнит экономики. Цена: 15,000 ₽. Технологии: Python, FastAPI, aiogram, Webhook, Платежные системы.">
+                        <img src="payment_system_bot.png" class="img-fluid mb-3" alt="Внедрение системы платежей в бот">
+                    </a>
+                    <div class="mb-3">
+                        <span class="badge bg-success fs-6">Цена: 15,000 ₽</span>
+                    </div>
+                    <p>Совместная разработка, моя задача была в том чтобы настроить и внедрить систему платежей в готового бота. Сам бот для автоматического расчета юнит экономики по Wildberries, где вы получаете полностью готовую таблицу со всеми формулами.</p>
+                    <p>Что я сделал: разработал обработчик webhook, реализовал внутреннюю логику проверки наличия подписки. Проверки на окончание подписки, оповещение за N время об окончании.</p>
+                    <div class="mt-3">
+                        <strong>Технологии:</strong>
+                        <div class="mt-2">
+                            <span class="badge bg-secondary me-1">Python</span>
+                            <span class="badge bg-secondary me-1">FastAPI</span>
+                            <span class="badge bg-secondary me-1">aiogram</span>
+                            <span class="badge bg-secondary me-1">Webhook</span>
+                            <span class="badge bg-secondary me-1">Платежные системы</span>
                         </div>
                     </div>
                 </div>
@@ -807,6 +972,17 @@
     </button>
 
     <script src="bootstrap-5.3.7-dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="glightbox/glightbox.min.js"></script>
+
+    <script>
+        const lightbox = GLightbox({
+            touchNavigation: true,
+            loop: false,
+            autoplayVideos: false,
+            closeOnOutsideClick: true
+        });
+    </script>
 
     <script>
         document.querySelectorAll('a[href^="#"]').forEach(anchor => { anchor.addEventListener('click', function (e) { e.preventDefault(); const target = document.querySelector(this.getAttribute('href')); if (target) { target.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }); });
