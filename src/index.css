@@ -1,0 +1,204 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-display: 'Unbounded Variable', 'Unbounded', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Onest Variable', 'Onest', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Ink ground kept from the previous design */
+  --color-bg: #050505;
+  --color-surface: #0c0c0c;
+  --color-elevated: #121212;
+  --color-border: #1f1f1f;
+  --color-border-hover: #2e2e2e;
+  --color-muted: #8a8a8a;
+  --color-subtle: #a8a8a8;
+  --color-fg: #f5f5f5;
+
+  /* Blue stays the brand: links, actions, focus */
+  --color-accent: #3b82f6;
+  --color-accent-soft: #60a5fa;
+  /* Amber is the second voice: status, numbers, prices, terms */
+  --color-amber: #f0a83c;
+  --color-amber-soft: #f7c778;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.0625rem;
+  --text-xl: 1.1875rem;
+  --text-2xl: 1.4375rem;
+  --text-3xl: 1.75rem;
+  --text-4xl: 2.125rem;
+  --text-5xl: 2.75rem;
+  --text-6xl: 3.4rem;
+
+  --radius-card: 0.875rem;
+  --radius-chip: 0.5rem;
+  --radius-control: 0.7rem;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5.5rem;
+    font-size: 16px;
+  }
+
+  body {
+    @apply bg-bg text-fg font-sans antialiased;
+    line-height: 1.6;
+    background-image:
+      radial-gradient(ellipse 75% 48% at 50% -18%, rgba(59, 130, 246, 0.13), transparent 70%),
+      radial-gradient(ellipse 45% 35% at 92% 6%, rgba(240, 168, 60, 0.06), transparent 70%);
+    background-attachment: fixed;
+    min-height: 100vh;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  ::selection {
+    background: rgba(59, 130, 246, 0.35);
+    color: #fff;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+}
+
+@layer components {
+  /* Spec-sheet label: mono, spaced, preceded by an amber tick */
+  .spec-label {
+    @apply inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.18em] text-muted;
+  }
+
+  .spec-label::before {
+    content: '';
+    width: 0.5rem;
+    height: 1px;
+    background: var(--color-amber);
+    flex: none;
+  }
+
+  .display {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.12;
+  }
+}
+
+@layer utilities {
+  .container-page {
+    @apply mx-auto w-full max-w-[72rem] px-5 sm:px-6 lg:px-8;
+  }
+
+  /* Keeps labels readable when they sit on translucent glass */
+  .text-legible {
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.65);
+  }
+
+  .grid-fade {
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 65% 60% at 50% 35%, black 15%, transparent 78%);
+  }
+
+  .glass {
+    background:
+      linear-gradient(
+        150deg,
+        rgba(255, 255, 255, 0.11) 0%,
+        rgba(255, 255, 255, 0.035) 45%,
+        rgba(255, 255, 255, 0.07) 100%
+      ),
+      rgba(10, 10, 12, 0.32);
+    backdrop-filter: blur(26px) saturate(185%);
+    -webkit-backdrop-filter: blur(26px) saturate(185%);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  }
+
+  .glass-strong {
+    background:
+      linear-gradient(
+        150deg,
+        rgba(255, 255, 255, 0.14) 0%,
+        rgba(255, 255, 255, 0.05) 45%,
+        rgba(255, 255, 255, 0.08) 100%
+      ),
+      rgba(6, 6, 8, 0.52);
+    backdrop-filter: blur(34px) saturate(195%);
+    -webkit-backdrop-filter: blur(34px) saturate(195%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow:
+      0 12px 38px rgba(0, 0, 0, 0.55),
+      inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(240, 168, 60, 0.5);
+  }
+  50% {
+    opacity: 0.75;
+    box-shadow: 0 0 0 4px rgba(240, 168, 60, 0);
+  }
+}
+
+.dot-live {
+  animation: pulse-dot 2.4s ease-in-out infinite;
+}
+
+/* Subtle ambient drift for hero glow — very low cost */
+@keyframes glow-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: translate3d(12px, 8px, 0) scale(1.04);
+    opacity: 1;
+  }
+}
+
+.hero-glow {
+  animation: glow-drift 12s ease-in-out infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .hero-glow,
+  .dot-live {
+    animation: none !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
