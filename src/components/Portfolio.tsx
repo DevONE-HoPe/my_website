@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Maximize2, X } from 'lucide-react'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import {
@@ -8,23 +8,62 @@ import {
 } from '../data/portfolio'
 import { Section } from './ui/Section'
 import { Badge } from './ui/Badge'
+import { Pagination } from './ui/Pagination'
 import { LightboxPortal } from './ui/Lightbox'
 import { cn } from '../lib/cn'
 import { asset } from '../lib/asset'
 import { useBodyScrollLock } from '../hooks/useBodyScrollLock'
+import { useMediaQuery } from '../hooks/useMediaQuery'
 import { Reveal } from './motion/Reveal'
 import { easeOut, springSoft } from './motion/variants'
+
+/* На телефоне сетка в одну колонку, и все работы подряд — это очень длинная
+   лента. Режем её на страницы; с sm и шире карточки идут в 2–3 колонки, там
+   пагинация не нужна и список показывается целиком. */
+const MOBILE_PAGE_SIZE = 5
 
 export function Portfolio() {
   const [filter, setFilter] = useState<(typeof portfolioFilters)[number]['id']>('all')
   const [active, setActive] = useState<PortfolioItem | null>(null)
   const [zoomIndex, setZoomIndex] = useState<number | null>(null)
+  const [page, setPage] = useState(1)
   const prefersReduced = useReducedMotion()
+  const isMobile = useMediaQuery('(max-width: 639px)')
+  const gridRef = useRef<HTMLDivElement>(null)
 
   const items = useMemo(() => {
     if (filter === 'all') return portfolioItems
     return portfolioItems.filter((item) => item.category === filter)
   }, [filter])
+
+  const totalPages = isMobile ? Math.ceil(items.length / MOBILE_PAGE_SIZE) : 1
+  /* Фильтр мог укоротить список сильнее, чем текущая страница: пока состояние
+     не сброшено эффектом, считаем по безопасному значению, а не по пустоте */
+  const safePage = Math.min(page, Math.max(totalPages, 1))
+
+  const visibleItems = useMemo(() => {
+    if (!isMobile) return items
+    const start = (safePage - 1) * MOBILE_PAGE_SIZE
+    return items.slice(start, start + MOBILE_PAGE_SIZE)
+  }, [items, isMobile, safePage])
+
+  /* Смена фильтра — всегда с первой страницы */
+  useEffect(() => {
+    setPage(1)
+  }, [filter])
+
+  const goToPage = (next: number) => {
+    setPage(next)
+    /* Иначе после перелистывания пользователь оказывается в конце новой
+       страницы — возвращаем его к первой карточке */
+    gridRef.current?.scrollIntoView({
+      behavior: prefersReduced ? 'auto' : 'smooth',
+      block: 'start',
+    })
+  }
+
+  const rangeStart = (safePage - 1) * MOBILE_PAGE_SIZE + 1
+  const rangeEnd = rangeStart + visibleItems.length - 1
 
   /* У любой работы есть галерея — как минимум из одной обложки */
   const gallery = useMemo(
@@ -79,11 +118,12 @@ export function Portfolio() {
         </Reveal>
 
         <motion.div
+          ref={gridRef}
           layout
           className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
         >
           <AnimatePresence mode="popLayout" initial={false}>
-            {items.map((item, i) => (
+            {visibleItems.map((item, i) => (
               <motion.button
                 key={item.id}
                 type="button"
@@ -141,6 +181,16 @@ export function Portfolio() {
             ))}
           </AnimatePresence>
         </motion.div>
+
+        {isMobile && (
+          <Pagination
+            page={safePage}
+            totalPages={totalPages}
+            onChange={goToPage}
+            summary={`${rangeStart}–${rangeEnd} из ${items.length}`}
+            className="mt-7"
+          />
+        )}
       </Section>
 
       <AnimatePresence>
