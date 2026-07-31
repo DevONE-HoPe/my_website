@@ -1,13 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Maximize2, X } from 'lucide-react'
+import { Check, Link2, Maximize2, Send, X } from 'lucide-react'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import {
   portfolioFilters,
   portfolioItems,
   type PortfolioItem,
 } from '../data/portfolio'
+import { profile } from '../data/content'
 import { Section } from './ui/Section'
 import { Badge } from './ui/Badge'
+import { Button } from './ui/Button'
 import { Pagination } from './ui/Pagination'
 import { LightboxPortal } from './ui/Lightbox'
 import { cn } from '../lib/cn'
@@ -22,10 +24,38 @@ import { easeOut, springSoft } from './motion/variants'
    пагинация не нужна и список показывается целиком. */
 const MOBILE_PAGE_SIZE = 5
 
+/**
+ * Ссылка в Telegram с уже готовым первым сообщением.
+ *
+ * Человек смотрит конкретную работу — это лучший момент, чтобы написать, и
+ * заодно единственный, когда ещё известно, какая работа его зацепила. Дальше
+ * этот контекст теряется: в общем блоке контактов приходит просто «здравствуйте».
+ *
+ * Параметр text подхватывают не все клиенты Telegram; там, где он не сработает,
+ * просто откроется диалог с пустым полем ввода — как у кнопки в контактах.
+ */
+function telegramLinkFor(item: PortfolioItem) {
+  const text = `Здравствуйте! Смотрю работу «${item.title}» в портфолио — хочу похожий проект. Обсудим?`
+  return `${profile.telegram}?text=${encodeURIComponent(text)}`
+}
+
+/* Каждая работа получает свой адрес: сайт одностраничный, роутера нет, поэтому
+   держим состояние модалки в хеше — этого хватает и для ссылки, и для истории */
+const HASH_PREFIX = '#work-'
+
+function itemFromHash(): PortfolioItem | null {
+  const { hash } = window.location
+  if (!hash.startsWith(HASH_PREFIX)) return null
+  const id = decodeURIComponent(hash.slice(HASH_PREFIX.length))
+  return portfolioItems.find((item) => item.id === id) ?? null
+}
+
 export function Portfolio() {
   const [filter, setFilter] = useState<(typeof portfolioFilters)[number]['id']>('all')
-  const [active, setActive] = useState<PortfolioItem | null>(null)
+  /* Ссылка вида /#work-ai-predictions открывает работу сразу при загрузке */
+  const [active, setActive] = useState<PortfolioItem | null>(itemFromHash)
   const [zoomIndex, setZoomIndex] = useState<number | null>(null)
+  const [copied, setCopied] = useState(false)
   const [page, setPage] = useState(1)
   const prefersReduced = useReducedMotion()
   const isMobile = useMediaQuery('(max-width: 639px)')
@@ -83,9 +113,54 @@ export function Portfolio() {
     return () => window.removeEventListener('keydown', onKey)
   }, [active, zoomIndex])
 
+  /* Под #work-… браузеру нечего искать — до секции доводим сами, чтобы
+     за закрытой карточкой оказалось портфолио, а не верх страницы */
+  useEffect(() => {
+    if (itemFromHash()) document.getElementById('portfolio')?.scrollIntoView()
+  }, [])
+
+  /* Кнопка «назад» закрывает карточку, а не уводит с сайта */
+  useEffect(() => {
+    const onPop = () => {
+      setZoomIndex(null)
+      setActive(itemFromHash())
+    }
+    window.addEventListener('popstate', onPop)
+    return () => window.removeEventListener('popstate', onPop)
+  }, [])
+
+  const openItem = (item: PortfolioItem) => {
+    setActive(item)
+    window.history.pushState({ work: item.id }, '', HASH_PREFIX + item.id)
+  }
+
   const closeModal = () => {
     setZoomIndex(null)
     setActive(null)
+    if (window.history.state?.work) {
+      /* Свою же запись в истории и снимаем — popstate доедет до того же null */
+      window.history.back()
+    } else {
+      /* Заход был сразу по ссылке: назад тут некуда, просто чистим адрес */
+      const { pathname, search } = window.location
+      window.history.replaceState(null, '', pathname + search)
+    }
+  }
+
+  /* Значок «скопировано» гаснет сам */
+  useEffect(() => {
+    if (!copied) return
+    const id = setTimeout(() => setCopied(false), 2000)
+    return () => clearTimeout(id)
+  }, [copied])
+
+  const copyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href)
+      setCopied(true)
+    } catch {
+      /* Без https и разрешения буфера обмена нет — молча оставляем как было */
+    }
   }
 
   return (
@@ -145,7 +220,7 @@ export function Portfolio() {
                         layout: { duration: 0.28, ease: easeOut },
                       }
                 }
-                onClick={() => setActive(item)}
+                onClick={() => openItem(item)}
                 className="group flex h-full flex-col overflow-hidden rounded-card border border-border bg-surface/85 text-left transition-colors duration-200 hover:border-accent/40"
               >
                 <div className="relative aspect-[16/10] overflow-hidden bg-elevated">
@@ -243,14 +318,25 @@ export function Portfolio() {
                     {gallery.length > 1 ? `${gallery.length} скрина` : 'Увеличить'}
                   </span>
                 </button>
-                <button
-                  type="button"
-                  onClick={closeModal}
-                  className="absolute right-3 top-3 inline-flex h-9 w-9 items-center justify-center rounded-chip border border-white/10 bg-black/65 text-white backdrop-blur-sm hover:bg-black/85"
-                  aria-label="Закрыть"
-                >
-                  <X size={16} />
-                </button>
+                <div className="absolute right-3 top-3 flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={copyLink}
+                    className="inline-flex h-9 items-center gap-1.5 rounded-chip border border-white/10 bg-black/65 px-3 font-mono text-xs text-white backdrop-blur-sm transition-colors hover:bg-black/85"
+                    aria-label="Скопировать ссылку на работу"
+                  >
+                    {copied ? <Check size={15} className="text-accent" /> : <Link2 size={15} />}
+                    {copied ? 'Скопировано' : 'Ссылка'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={closeModal}
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-chip border border-white/10 bg-black/65 text-white backdrop-blur-sm hover:bg-black/85"
+                    aria-label="Закрыть"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
               </div>
 
               {gallery.length > 1 && (
@@ -294,6 +380,16 @@ export function Portfolio() {
                       </Badge>
                     ))}
                   </div>
+                </div>
+
+                <div className="mt-6 border-t border-border pt-5">
+                  <Button href={telegramLinkFor(active)} external className="w-full">
+                    <Send size={16} />
+                    Хочу такой же проект
+                  </Button>
+                  <p className="mt-2.5 text-center text-sm text-muted">
+                    Откроется Telegram — название работы уже будет в сообщении
+                  </p>
                 </div>
               </div>
             </motion.div>
