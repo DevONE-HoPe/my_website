@@ -14,6 +14,7 @@ import { Pagination } from './ui/Pagination'
 import { LightboxPortal } from './ui/Lightbox'
 import { cn } from '../lib/cn'
 import { asset } from '../lib/asset'
+import { track } from '../lib/track'
 import { useBodyScrollLock } from '../hooks/useBodyScrollLock'
 import { useMediaQuery } from '../hooks/useMediaQuery'
 import { Reveal } from './motion/Reveal'
@@ -131,6 +132,7 @@ export function Portfolio() {
 
   const openItem = (item: PortfolioItem) => {
     setActive(item)
+    track('work_open', { work: item.id })
     window.history.pushState({ work: item.id }, '', HASH_PREFIX + item.id)
   }
 
@@ -158,6 +160,7 @@ export function Portfolio() {
     try {
       await navigator.clipboard.writeText(window.location.href)
       setCopied(true)
+      if (active) track('work_copy_link', { work: active.id })
     } catch {
       /* Без https и разрешения буфера обмена нет — молча оставляем как было */
     }
@@ -179,7 +182,10 @@ export function Portfolio() {
               type="button"
               role="tab"
               aria-selected={filter === f.id}
-              onClick={() => setFilter(f.id)}
+              onClick={() => {
+                setFilter(f.id)
+                track('portfolio_filter', { filter: f.id })
+              }}
               className={cn(
                 'relative rounded-chip border px-3.5 py-1.5 font-mono text-sm transition-colors',
                 filter === f.id
@@ -383,7 +389,15 @@ export function Portfolio() {
                 </div>
 
                 <div className="mt-6 border-t border-border pt-5">
-                  <Button href={telegramLinkFor(active)} external className="w-full">
+                  <Button
+                    href={telegramLinkFor(active)}
+                    external
+                    className="w-full"
+                    onClick={() => {
+                      track('work_cta_click', { work: active.id })
+                      track('telegram_click', { place: 'work_modal' })
+                    }}
+                  >
                     <Send size={16} />
                     Хочу такой же проект
                   </Button>

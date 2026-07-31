@@ -1,5 +1,6 @@
 import { Clock, MessageCircle, Send, Shield } from 'lucide-react'
 import { profile } from '../data/content'
+import { track } from '../lib/track'
 import { Button } from './ui/Button'
 import { Section } from './ui/Section'
 import { Reveal } from './motion/Reveal'
@@ -30,7 +31,12 @@ export function Contact() {
         </p>
 
         <div className="mt-5">
-          <Button href={profile.telegram} external className="w-full sm:w-auto">
+          <Button
+            href={profile.telegram}
+            external
+            className="w-full sm:w-auto"
+            onClick={() => track('telegram_click', { place: 'contact' })}
+          >
             <Send size={16} />
             {profile.telegramHandle}
           </Button>

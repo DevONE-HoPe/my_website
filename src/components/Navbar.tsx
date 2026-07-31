@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { navLinks, profile } from '../data/content'
 import { Button } from './ui/Button'
 import { cn } from '../lib/cn'
+import { track } from '../lib/track'
 import { easeOut } from './motion/variants'
 import { useBodyScrollLock } from '../hooks/useBodyScrollLock'
 
@@ -53,7 +54,12 @@ export function Navbar() {
                 {link.label}
               </a>
             ))}
-            <Button href={profile.telegram} external className="ml-2 !py-2 !text-sm">
+            <Button
+              href={profile.telegram}
+              external
+              className="ml-2 !py-2 !text-sm"
+              onClick={() => track('telegram_click', { place: 'navbar' })}
+            >
               Написать
             </Button>
           </nav>
@@ -104,7 +110,10 @@ export function Navbar() {
                   href={profile.telegram}
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={() => setOpen(false)}
+                  onClick={() => {
+                    track('telegram_click', { place: 'navbar_mobile' })
+                    setOpen(false)
+                  }}
                   className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-control bg-accent px-5 py-3 text-base font-semibold text-[#1a1005]"
                 >
                   Написать в Telegram

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { ArrowRight, Send } from 'lucide-react'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { profile } from '../data/content'
+import { track } from '../lib/track'
 import { Button } from './ui/Button'
 import { easeOut, fadeUp, staggerContainer, tweenOut } from './motion/variants'
 
@@ -106,7 +107,11 @@ export function Hero() {
               transition={tweenOut(0.45)}
               className="mt-7 flex flex-wrap items-center gap-3"
             >
-              <Button href={profile.telegram} external>
+              <Button
+                href={profile.telegram}
+                external
+                onClick={() => track('telegram_click', { place: 'hero' })}
+              >
                 <Send size={16} />
                 Обсудить задачу
               </Button>

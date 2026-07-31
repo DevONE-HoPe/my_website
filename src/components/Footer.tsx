@@ -1,5 +1,6 @@
 import { Send } from 'lucide-react'
 import { profile } from '../data/content'
+import { track } from '../lib/track'
 
 export function Footer() {
   const year = new Date().getFullYear()
@@ -14,6 +15,7 @@ export function Footer() {
           href={profile.telegram}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={() => track('telegram_click', { place: 'footer' })}
           className="inline-flex items-center gap-2 font-mono text-sm text-subtle transition-colors hover:text-accent"
           aria-label="Telegram"
         >

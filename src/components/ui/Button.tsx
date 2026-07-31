@@ -3,12 +3,15 @@ import { cn } from '../../lib/cn'
 
 type Variant = 'primary' | 'secondary' | 'ghost'
 
-type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
+/* onClick описан отдельно и без события: обработчик вешается и на button, и на
+   ссылку, а типы события у них разные. Всем текущим вызовам аргумент не нужен */
+type Props = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'> & {
   variant?: Variant
   href?: string
   children: ReactNode
   className?: string
   external?: boolean
+  onClick?: () => void
 }
 
 const variants: Record<Variant, string> = {
@@ -25,6 +28,7 @@ export function Button({
   children,
   className,
   external,
+  onClick,
   ...props
 }: Props) {
   const classes = cn(
@@ -39,6 +43,7 @@ export function Button({
       <a
         href={href}
         className={classes}
+        onClick={onClick}
         {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
       >
         {children}
@@ -47,7 +52,7 @@ export function Button({
   }
 
   return (
-    <button type="button" className={classes} {...props}>
+    <button type="button" className={classes} onClick={onClick} {...props}>
       {children}
     </button>
   )
