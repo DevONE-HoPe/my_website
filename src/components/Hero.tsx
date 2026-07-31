@@ -18,7 +18,7 @@ const SPEC = [
   { label: 'Локация', value: profile.location },
   { label: 'Опыт', value: profile.experience },
   { label: 'Фокус', value: 'AI + Telegram' },
-  { label: 'Проектов', value: '13+' },
+  { label: 'Проектов', value: '17+' },
   { label: 'Формат', value: 'от идеи до деплоя' },
 ]
 

@@ -1,7 +1,23 @@
-import type { ElementType, ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import { motion, useReducedMotion, type UseInViewOptions } from 'framer-motion'
 import { cn } from '../../lib/cn'
 import { fadeUp, reduced, tweenOut } from './variants'
+
+/**
+ * Готовые motion-компоненты берём из таблицы, а не через motion.create() в
+ * рендере: там на каждый рендер рождается новый тип, React размонтирует
+ * поддерево, и whileInView проигрывается заново — текст дёргается.
+ */
+const motionTags = {
+  div: motion.div,
+  header: motion.header,
+  li: motion.li,
+  article: motion.article,
+  span: motion.span,
+  ul: motion.ul,
+  ol: motion.ol,
+  dl: motion.dl,
+}
 
 /**
  * Trigger as soon as a sliver is near the viewport.
@@ -40,7 +56,7 @@ export function Reveal({
   'aria-label': ariaLabel,
 }: RevealProps) {
   const prefersReduced = useReducedMotion()
-  const Tag = motion.create(as as ElementType)
+  const Tag = motionTags[as]
 
   const variants = prefersReduced
     ? reduced
@@ -84,7 +100,7 @@ export function Stagger({
   as = 'div',
 }: StaggerProps) {
   const prefersReduced = useReducedMotion()
-  const Tag = motion.create(as as ElementType)
+  const Tag = motionTags[as]
 
   return (
     <Tag
@@ -119,7 +135,7 @@ type ItemProps = {
 
 export function StaggerItem({ children, className, as = 'div' }: ItemProps) {
   const prefersReduced = useReducedMotion()
-  const Tag = motion.create(as as ElementType)
+  const Tag = motionTags[as]
 
   return (
     <Tag

@@ -5,6 +5,7 @@ import { navLinks, profile } from '../data/content'
 import { Button } from './ui/Button'
 import { cn } from '../lib/cn'
 import { easeOut } from './motion/variants'
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock'
 
 export function Navbar() {
   const [open, setOpen] = useState(false)
@@ -18,15 +19,10 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  useEffect(() => {
-    document.body.style.overflow = open ? 'hidden' : ''
-    return () => {
-      document.body.style.overflow = ''
-    }
-  }, [open])
+  useBodyScrollLock(open)
 
   return (
-    <header className="pointer-events-none fixed inset-x-0 top-0 z-50 pt-3">
+    <header className="fixed-gutter pointer-events-none fixed inset-x-0 top-0 z-50 pt-3">
       <div className="container-page pointer-events-auto">
         <motion.div
           initial={prefersReduced ? false : { opacity: 0, y: -12 }}

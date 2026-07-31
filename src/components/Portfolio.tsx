@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { X } from 'lucide-react'
+import { Maximize2, X } from 'lucide-react'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import {
   portfolioFilters,
@@ -8,18 +8,17 @@ import {
 } from '../data/portfolio'
 import { Section } from './ui/Section'
 import { Badge } from './ui/Badge'
+import { LightboxPortal } from './ui/Lightbox'
 import { cn } from '../lib/cn'
+import { asset } from '../lib/asset'
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock'
 import { Reveal } from './motion/Reveal'
 import { easeOut, springSoft } from './motion/variants'
-
-function asset(path: string) {
-  const base = import.meta.env.BASE_URL
-  return `${base}${path.replace(/^\//, '')}`
-}
 
 export function Portfolio() {
   const [filter, setFilter] = useState<(typeof portfolioFilters)[number]['id']>('all')
   const [active, setActive] = useState<PortfolioItem | null>(null)
+  const [zoomIndex, setZoomIndex] = useState<number | null>(null)
   const prefersReduced = useReducedMotion()
 
   const items = useMemo(() => {
@@ -27,18 +26,28 @@ export function Portfolio() {
     return portfolioItems.filter((item) => item.category === filter)
   }, [filter])
 
+  /* У любой работы есть галерея — как минимум из одной обложки */
+  const gallery = useMemo(
+    () => (active ? (active.gallery ?? [active.image]).map(asset) : []),
+    [active],
+  )
+
+  useBodyScrollLock(active !== null)
+
   useEffect(() => {
     if (!active) return
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setActive(null)
+      /* Esc при открытом просмотре закрывает только просмотр */
+      if (e.key === 'Escape' && zoomIndex === null) setActive(null)
     }
-    document.body.style.overflow = 'hidden'
     window.addEventListener('keydown', onKey)
-    return () => {
-      document.body.style.overflow = ''
-      window.removeEventListener('keydown', onKey)
-    }
-  }, [active])
+    return () => window.removeEventListener('keydown', onKey)
+  }, [active, zoomIndex])
+
+  const closeModal = () => {
+    setZoomIndex(null)
+    setActive(null)
+  }
 
   return (
     <>
@@ -141,7 +150,7 @@ export function Portfolio() {
             role="dialog"
             aria-modal="true"
             aria-labelledby="portfolio-modal-title"
-            onClick={() => setActive(null)}
+            onClick={closeModal}
             initial={prefersReduced ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={prefersReduced ? undefined : { opacity: 0 }}
@@ -168,20 +177,52 @@ export function Portfolio() {
               }
             >
               <div className="relative aspect-[16/9] bg-elevated">
-                <img
-                  src={asset(active.image)}
-                  alt={active.title}
-                  className="h-full w-full object-cover"
-                />
                 <button
                   type="button"
-                  onClick={() => setActive(null)}
+                  onClick={() => setZoomIndex(0)}
+                  className="group/zoom block h-full w-full cursor-zoom-in"
+                  aria-label={`${active.title} — открыть изображение`}
+                >
+                  <img
+                    src={asset(active.image)}
+                    alt={active.title}
+                    className="h-full w-full object-cover"
+                  />
+                  <span className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-chip border border-white/12 bg-black/65 px-2.5 py-1 font-mono text-xs text-white/85 backdrop-blur-sm transition-colors group-hover/zoom:border-accent/50">
+                    <Maximize2 size={13} />
+                    {gallery.length > 1 ? `${gallery.length} скрина` : 'Увеличить'}
+                  </span>
+                </button>
+                <button
+                  type="button"
+                  onClick={closeModal}
                   className="absolute right-3 top-3 inline-flex h-9 w-9 items-center justify-center rounded-chip border border-white/10 bg-black/65 text-white backdrop-blur-sm hover:bg-black/85"
                   aria-label="Закрыть"
                 >
                   <X size={16} />
                 </button>
               </div>
+
+              {gallery.length > 1 && (
+                <div className="flex gap-2 overflow-x-auto border-b border-border/60 bg-elevated/40 p-3">
+                  {gallery.map((src, i) => (
+                    <button
+                      key={src}
+                      type="button"
+                      onClick={() => setZoomIndex(i)}
+                      aria-label={`Открыть скриншот ${i + 1}`}
+                      className="h-16 w-24 shrink-0 cursor-zoom-in overflow-hidden rounded-chip border border-border bg-bg transition-colors hover:border-accent/50"
+                    >
+                      <img
+                        src={src}
+                        alt={`${active.title} — скриншот ${i + 1}`}
+                        loading="lazy"
+                        className="h-full w-full object-contain"
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
               <div className="p-5 sm:p-7">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <h3 id="portfolio-modal-title" className="display text-xl text-fg sm:text-2xl">
@@ -209,6 +250,15 @@ export function Portfolio() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <LightboxPortal
+        open={active !== null && zoomIndex !== null}
+        images={gallery}
+        index={zoomIndex ?? 0}
+        title={active?.title ?? ''}
+        onIndexChange={setZoomIndex}
+        onClose={() => setZoomIndex(null)}
+      />
     </>
   )
 }
