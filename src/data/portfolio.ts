@@ -14,6 +14,38 @@ export type PortfolioItem = {
 
 export const portfolioItems: PortfolioItem[] = [
   {
+    id: 'hoyo-autodonate',
+    title: 'Автодонат HoYoverse: панель + публичный API',
+    summary: 'Панель и API для автопополнения. Свой Chrome, 3DS, масштаб воркерами.',
+    description:
+      'Сервис автопополнения для Genshin Impact, Honkai: Star Rail, Zenless Zone Zero и Honkai Impact 3rd — живой продукт: genshinimpactautodonate.com. Заказ ставится из панели или через публичный API: игра, сервер, почта аккаунта и список товаров. Дальше конвейер из двух этапов. Сначала логин по API и полная проверка аккаунта — персонажи, витрина, куки; мёртвый аккаунт отсекается до браузера. Если всё живо, поднимается свой Chrome с Google-профилем, имитацией пользователя и оплатой, включая 3DS-коды с почты. Официальная витрина разбиралась и реверсилась, очередь живёт в PostgreSQL за PgBouncer, воркеры забирают задачи сами — масштаб это число контейнеров и память под Chrome. Три роли: пользователь видит заказ, историю и свой API-токен, модер — аккаунты и прокси, админ — статистику конвейера по этапам.',
+    image: 'autodonate/cover.webp',
+    gallery: [
+      'autodonate/01_user_home.webp',
+      'autodonate/02_donate.webp',
+      'autodonate/08_games.webp',
+      'autodonate/03_user_history.webp',
+      'autodonate/05_api.webp',
+      'autodonate/04_stats.webp',
+      'autodonate/07_admin_home.webp',
+      'autodonate/06_login.webp',
+    ],
+    price: '280 000 ₽',
+    priceType: 'fixed',
+    tags: [
+      'FastAPI',
+      'React',
+      'PostgreSQL',
+      'Chrome',
+      'Docker',
+      'PgBouncer',
+      '3DS',
+      'Public API',
+      'Linux',
+    ],
+    category: 'other',
+  },
+  {
     id: 'ai-predictions',
     title: 'WebApp прогнозов на ИИ',
     summary: 'ИИ понимает ставку обычным текстом: находит матч, определяет исход, собирает экспресс.',
