@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { ArrowRight, Send } from 'lucide-react'
+import { ArrowRight, FileText, Send } from 'lucide-react'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { profile } from '../data/content'
 import { track } from '../lib/track'
@@ -118,6 +118,10 @@ export function Hero() {
               <Button href="#portfolio" variant="secondary">
                 Смотреть портфолио
                 <ArrowRight size={16} />
+              </Button>
+              <Button href="#resume" variant="ghost">
+                <FileText size={16} />
+                Резюме
               </Button>
             </motion.div>
           </motion.div>

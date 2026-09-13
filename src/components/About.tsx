@@ -104,6 +104,14 @@ export function About() {
             </div>
 
             <p className="mt-5 text-base leading-relaxed text-subtle">{profile.summary}</p>
+            <p className="mt-3 text-sm">
+              <a
+                href="#resume"
+                className="font-medium text-accent-soft transition-colors hover:text-accent"
+              >
+                Открыть резюме (RU / EN, PDF) →
+              </a>
+            </p>
 
             <p className="spec-label mt-6">Направления</p>
             <ul className="mt-2 border-t border-border/70">

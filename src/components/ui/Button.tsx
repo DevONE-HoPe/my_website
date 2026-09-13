@@ -11,6 +11,7 @@ type Props = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'> & {
   children: ReactNode
   className?: string
   external?: boolean
+  download?: boolean | string
   onClick?: () => void
 }
 
@@ -28,6 +29,7 @@ export function Button({
   children,
   className,
   external,
+  download,
   onClick,
   ...props
 }: Props) {
@@ -45,6 +47,9 @@ export function Button({
         className={classes}
         onClick={onClick}
         {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+        {...(download
+          ? { download: download === true ? true : download }
+          : {})}
       >
         {children}
       </a>

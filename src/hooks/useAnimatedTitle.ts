@@ -74,8 +74,13 @@ export function useAnimatedTitle() {
       tick()
     }
 
+    const onResumePage = () => {
+      const h = window.location.hash
+      return h === '#resume' || h.startsWith('#resume/')
+    }
+
     const sync = () => {
-      const shouldRun = isDesktop() && !reduceMotion.matches
+      const shouldRun = isDesktop() && !reduceMotion.matches && !onResumePage()
 
       if (shouldRun && !timer) start()
       else if (!shouldRun && timer) stop()
@@ -85,10 +90,12 @@ export function useAnimatedTitle() {
 
     media.addEventListener('change', sync)
     reduceMotion.addEventListener('change', sync)
+    window.addEventListener('hashchange', sync)
 
     return () => {
       media.removeEventListener('change', sync)
       reduceMotion.removeEventListener('change', sync)
+      window.removeEventListener('hashchange', sync)
       stop()
     }
   }, [])

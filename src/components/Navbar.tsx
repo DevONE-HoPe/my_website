@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { Menu, Terminal, X } from 'lucide-react'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { navLinks, profile } from '../data/content'
+import { isResumeHash } from '../data/resume'
+import { useHash } from '../hooks/useHash'
 import { Button } from './ui/Button'
 import { cn } from '../lib/cn'
 import { track } from '../lib/track'
@@ -12,6 +14,7 @@ export function Navbar() {
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const prefersReduced = useReducedMotion()
+  const hash = useHash()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8)
@@ -49,7 +52,12 @@ export function Navbar() {
               <a
                 key={link.href}
                 href={link.href}
-                className="text-legible rounded-chip px-3 py-2 text-[0.95rem] font-medium text-fg/85 transition-colors hover:bg-accent/20 hover:text-fg"
+                className={cn(
+                  'text-legible rounded-chip px-3 py-2 text-[0.95rem] font-medium transition-colors hover:bg-accent/20 hover:text-fg',
+                  link.href === '#resume' && isResumeHash(hash)
+                    ? 'bg-accent/20 text-fg'
+                    : 'text-fg/85',
+                )}
               >
                 {link.label}
               </a>

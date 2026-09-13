@@ -1,7 +1,7 @@
 export const profile = {
   name: 'Рамазан',
   age: 21,
-  location: 'Вьетнам',
+  location: 'Дананга, Вьетнам',
   role: 'Fullstack-разработчик | AI/Automation',
   experience: '5 лет опыта',
   summary:
@@ -202,6 +202,7 @@ export const navLinks = [
   { href: '#about', label: 'Обо мне' },
   { href: '#services', label: 'Услуги' },
   { href: '#portfolio', label: 'Портфолио' },
+  { href: '#resume', label: 'Резюме' },
   { href: '#process', label: 'Процесс' },
   { href: '#faq', label: 'FAQ' },
   { href: '#contact', label: 'Контакты' },

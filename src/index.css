@@ -193,6 +193,63 @@
   will-change: transform;
 }
 
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm 14mm 16mm;
+  }
+
+  html {
+    font-size: 11pt;
+    scrollbar-gutter: auto;
+  }
+
+  body {
+    background: #fff !important;
+    background-image: none !important;
+    color: #1a1a1a !important;
+  }
+
+  header,
+  footer,
+  .resume-toolbar,
+  .grid-fade,
+  .hero-glow,
+  .fixed-gutter,
+  button[aria-label='Наверх'] {
+    display: none !important;
+  }
+
+  .resume-page {
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+
+  .resume-sheet {
+    border: none !important;
+    background: #fff !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+  }
+
+  .resume-sheet,
+  .resume-sheet * {
+    color: #1a1a1a !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+  }
+
+  .resume-sheet a {
+    color: #1d4ed8 !important;
+  }
+
+  .container-page {
+    max-width: none;
+    padding: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

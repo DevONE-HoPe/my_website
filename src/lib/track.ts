@@ -30,6 +30,14 @@ export type TrackEvent =
   | 'portfolio_filter'
   /** Ушли в Telegram — параметр place говорит, из какого блока */
   | 'telegram_click'
+  /** Скачали PDF резюме */
+  | 'resume_pdf'
+  /** Переключили язык резюме */
+  | 'resume_lang'
+  /** Печать резюме */
+  | 'resume_print'
+  /** Скопировали прямую ссылку на PDF */
+  | 'resume_copy_link'
 
 export function track(event: TrackEvent, params?: Record<string, string>) {
   window.gtag?.('event', event, params)
