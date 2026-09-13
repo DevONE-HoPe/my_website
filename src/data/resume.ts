@@ -46,6 +46,8 @@ export type ResumeCopy = {
   role: string
   location: string
   intro: string
+  strengthsTitle: string
+  strengths: string[]
   stackTitle: string
   stack: { label: string; items: string }[]
   experienceTitle: string
@@ -77,14 +79,21 @@ export const resumeCopy: Localized<ResumeCopy> = {
     role: 'Backend / AI Engineer',
     location: 'Дананга, Вьетнам (UTC+7) · готов к графику МСК',
     intro:
-      'Python-разработчик: backend, Telegram-продукты и LLM-интеграции. Собираю сервисы под ключ — архитектура, код, деплой на Linux. Сейчас живу в Дананге, работаю удалённо и спокойно закрываю график Москвы. Открыт к найму и к длинным проектным контрактам.',
+      'Python-разработчик: backend, Telegram-продукты и LLM-интеграции. Собираю сервисы под ключ — архитектура, код, деплой на Linux. Большую часть заказов вёл сам: от разговора с заказчиком до сдачи. Сейчас живу в Дананге, работаю удалённо и закрываю график Москвы.',
+    strengthsTitle: 'Сильные стороны',
+    strengths: [
+      'Много работал напрямую с заказчиками. Задачу и результат объясняю бизнесовым языком: что получаем, зачем, какой эффект — без простыни из технологий. Умею преподнести проект так, чтобы его понял не только разработчик.',
+      'Большой опыт QA на разных слоях: интерфейс сайта и приложения, ревью и тестирование кода, проверка БД и сервера. Не отдаю «вроде работает».',
+      'Есть опыт в информационной безопасности: харденинг Linux-серверов (TLS, fail2ban, пользователи и права), шифрование канала в клиент-серверных сервисах, базовая модель доступа в проде.',
+    ],
     stackTitle: 'Стек',
     stack: [
       { label: 'Языки', items: 'Python, TypeScript / JavaScript, SQL, C++ (базовый)' },
       { label: 'Фреймворки', items: 'FastAPI, aiogram 3, React, aiohttp' },
       { label: 'БД', items: 'PostgreSQL, Redis, MongoDB, PgBouncer' },
-      { label: 'Инфра', items: 'Docker, nginx, Linux, Kubernetes, AWS' },
-      { label: 'AI / наблюдение', items: 'OpenAI / Claude / Gemini API, OpenRouter, RAG, MCP, LangChain, Sentry, Prometheus, Grafana' },
+      { label: 'Инфра', items: 'Docker, nginx, Linux, Kubernetes, AWS, GitLab, GitHub Actions, CI/CD' },
+      { label: 'AI / наблюдение', items: 'OpenAI / Claude / Gemini API, OpenRouter, RAG, MCP, LangChain, Sentry, Prometheus, Grafana, Kibana' },
+      { label: 'Процессы', items: 'Jira, YouTrack, канбан' },
     ],
     experienceTitle: 'Опыт',
     jobs: [
@@ -120,7 +129,7 @@ export const resumeCopy: Localized<ResumeCopy> = {
         bullets: [
           'Парсеры статики и динамики на Selenium, Playwright и undetected-chromedriver: маркетплейсы, вакансии, отзывы — с выгрузкой в CSV и уведомлениями в Telegram.',
           'Telegram-боты с подписками и генерацией текста/изображений, платежи по webhook на FastAPI. Бот продажи авто с динамической локализацией под разные страны (Docker, PostgreSQL, Redis).',
-          'Администрировал Ubuntu: nginx, Let’s Encrypt, fail2ban, Docker, пользователи и базовая безопасность сервера.',
+          'Администрировал Ubuntu с упором на безопасность: nginx, TLS (Let’s Encrypt), fail2ban, пользователи и права, базовая модель доступа.',
         ],
       },
     ],
@@ -165,7 +174,8 @@ export const resumeCopy: Localized<ResumeCopy> = {
     languagesTitle: 'Языки',
     languages: [
       'Русский — родной',
-      'Английский — A2: читаю документацию и пишу простые письма, устно пока слабо',
+      'Татарский — родной',
+      'Английский — B1: читаю документацию и рабочую переписку, говорить сложнее',
     ],
     formatTitle: 'Формат',
     format: [
@@ -189,14 +199,21 @@ export const resumeCopy: Localized<ResumeCopy> = {
     role: 'Backend / AI Engineer',
     location: 'Da Nang, Vietnam (UTC+7) · available for Moscow hours',
     intro:
-      'Python engineer: backend, Telegram products, and LLM integrations. I ship services end to end — architecture, code, Linux deploy. I live in Da Nang, work remotely, and can follow Moscow time. Open to full-time remote roles and longer contracts.',
+      'Python engineer: backend, Telegram products, and LLM integrations. I ship services end to end — architecture, code, Linux deploy. I ran most client work myself, from the first call to delivery, and I can present a project in business language, not only in APIs. Based in Da Nang, remote, available on Moscow hours.',
+    strengthsTitle: 'Strengths',
+    strengths: [
+      'Years of direct client work. I explain the product in business terms: what you get, why it matters, what changes — not a dump of technologies. I can pitch a project so a non-engineer understands it.',
+      'Strong QA across layers: UI of the site or app, code review and testing, database checks, server and deploy. I do not ship “it seems to work”.',
+      'Hands-on information security: Linux hardening (TLS, fail2ban, users and permissions), channel encryption in client-server apps, baseline access control in production.',
+    ],
     stackTitle: 'Stack',
     stack: [
       { label: 'Languages', items: 'Python, TypeScript / JavaScript, SQL, C++ (basic)' },
       { label: 'Frameworks', items: 'FastAPI, aiogram 3, React, aiohttp' },
       { label: 'Databases', items: 'PostgreSQL, Redis, MongoDB, PgBouncer' },
-      { label: 'Infra', items: 'Docker, nginx, Linux, Kubernetes, AWS' },
-      { label: 'AI / observability', items: 'OpenAI / Claude / Gemini API, OpenRouter, RAG, MCP, LangChain, Sentry, Prometheus, Grafana' },
+      { label: 'Infra', items: 'Docker, nginx, Linux, Kubernetes, AWS, GitLab, GitHub Actions, CI/CD' },
+      { label: 'AI / observability', items: 'OpenAI / Claude / Gemini API, OpenRouter, RAG, MCP, LangChain, Sentry, Prometheus, Grafana, Kibana' },
+      { label: 'Process', items: 'Jira, YouTrack, Kanban' },
     ],
     experienceTitle: 'Experience',
     jobs: [
@@ -232,7 +249,7 @@ export const resumeCopy: Localized<ResumeCopy> = {
         bullets: [
           'Parsers for static and dynamic sites with Selenium, Playwright, and undetected-chromedriver: marketplaces, jobs, reviews — CSV export and Telegram alerts.',
           'Telegram bots with subscriptions and text/image generation, FastAPI payment webhooks. A car-sales bot with dynamic localization for different countries (Docker, PostgreSQL, Redis).',
-          'Administered Ubuntu servers: nginx, Let’s Encrypt, fail2ban, Docker, users, and baseline hardening.',
+          'Administered Ubuntu with a security focus: nginx, TLS (Let’s Encrypt), fail2ban, users and permissions, baseline access control.',
         ],
       },
     ],
@@ -277,7 +294,8 @@ export const resumeCopy: Localized<ResumeCopy> = {
     languagesTitle: 'Languages',
     languages: [
       'Russian — native',
-      'English — A2: I read technical docs and write simple emails; speaking is still limited',
+      'Tatar — native',
+      'English — B1: I read docs and work email; speaking is harder',
     ],
     formatTitle: 'Work format',
     format: [

@@ -211,6 +211,20 @@ export function ResumePage() {
             <p className="mt-5 text-base leading-relaxed text-subtle">{t.intro}</p>
 
             <section className="mt-8">
+              <h2 className="spec-label mb-3">{t.strengthsTitle}</h2>
+              <ul className="space-y-2">
+                {t.strengths.map((item) => (
+                  <li
+                    key={item}
+                    className="relative pl-4 text-base leading-relaxed text-subtle before:absolute before:left-0 before:top-[0.7em] before:h-1 before:w-1 before:rounded-full before:bg-amber"
+                  >
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </section>
+
+            <section className="mt-8">
               <h2 className="spec-label mb-3">{t.stackTitle}</h2>
               <dl className="border-t border-border/70">
                 {t.stack.map((row) => (
