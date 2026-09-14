@@ -18,7 +18,7 @@ export function Contact() {
       eyebrow="Контакты"
       title="Обсудим вашу задачу"
       description="Напишите в Telegram — отвечу, уточню детали и предложу план с ориентиром по срокам и цене."
-      className="border-t border-border/60"
+      className="min-h-[calc(100svh-6.5rem)] border-t border-border/60"
       narrow
     >
       <Reveal className="mx-auto max-w-xl rounded-card border border-accent/25 bg-gradient-to-b from-elevated to-surface p-6 text-center sm:p-8">

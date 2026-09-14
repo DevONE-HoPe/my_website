@@ -41,7 +41,7 @@
 @layer base {
   html {
     scroll-behavior: smooth;
-    scroll-padding-top: 5.5rem;
+    scroll-padding-top: 6rem;
     font-size: 16px;
     /* Место под скроллбар зарезервировано всегда — вёрстка не прыгает,
        когда модалка блокирует прокрутку страницы */
@@ -154,6 +154,32 @@
       inset 0 1px 0 rgba(255, 255, 255, 0.14);
   }
 
+  /* Мягкий сход сплошной шапки в страницу — клики сквозь неё проходят */
+  .nav-fade {
+    background: linear-gradient(
+      to bottom,
+      var(--color-bg) 0%,
+      var(--color-bg) 28%,
+      color-mix(in srgb, var(--color-bg) 70%, transparent) 62%,
+      transparent 100%
+    );
+  }
+
+  .nav-island {
+    background: #101010;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow:
+      0 10px 36px rgba(0, 0, 0, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  .nav-active-pill {
+    background: linear-gradient(180deg, #60a5fa 0%, #3b82f6 52%, #2563eb 100%);
+    box-shadow:
+      0 8px 22px -6px rgba(59, 130, 246, 0.85),
+      inset 0 1px 0 rgba(255, 255, 255, 0.38);
+  }
+
   .tabular {
     font-variant-numeric: tabular-nums;
   }
@@ -190,6 +216,22 @@
 
 .hero-glow {
   animation: glow-drift 12s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes nav-orb-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(var(--orb-rot, -8deg));
+  }
+  50% {
+    transform: translate3d(var(--orb-x, 10px), var(--orb-y, -14px), 0)
+      rotate(calc(var(--orb-rot, -8deg) * -1));
+  }
+}
+
+.nav-orb {
+  animation: nav-orb-float 7.5s ease-in-out infinite;
   will-change: transform;
 }
 
@@ -256,7 +298,8 @@
   }
 
   .hero-glow,
-  .dot-live {
+  .dot-live,
+  .nav-orb {
     animation: none !important;
   }
 

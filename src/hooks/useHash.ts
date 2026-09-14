@@ -8,7 +8,11 @@ export function useHash() {
   useEffect(() => {
     const onChange = () => setHash(window.location.hash)
     window.addEventListener('hashchange', onChange)
-    return () => window.removeEventListener('hashchange', onChange)
+    window.addEventListener('popstate', onChange)
+    return () => {
+      window.removeEventListener('hashchange', onChange)
+      window.removeEventListener('popstate', onChange)
+    }
   }, [])
 
   return hash
