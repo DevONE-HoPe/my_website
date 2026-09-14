@@ -1,6 +1,6 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import { Menu, Send, Terminal, X } from 'lucide-react'
-import { AnimatePresence, LayoutGroup, motion, useReducedMotion } from 'framer-motion'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { navLinks, profile } from '../data/content'
 import { useActiveSection } from '../hooks/useActiveSection'
 import { useBodyScrollLock } from '../hooks/useBodyScrollLock'
@@ -44,20 +44,76 @@ const MOBILE_ORBS = [
   },
 ] as const
 
-/** Shared layout из Motion (как в их примере с табами). bounce: 0 — без раскачки влево-вправо. */
+/** bounce: 0 — без раскачки влево-вправо. */
 const pillTransition = { type: 'spring' as const, bounce: 0, duration: 0.35 }
 
-function TabHighlight({ on, reduced }: { on: boolean; reduced: boolean | null }) {
-  if (!on) return null
-  if (reduced) {
-    return <span className="nav-active-pill absolute inset-0 rounded-full" />
+type PillBox = { x: number; y: number; width: number; height: number; instant: boolean }
+
+/**
+ * Одна постоянная пилюля под активной вкладкой.
+ *
+ * Не layoutId: shared layout меряет элементы относительно документа, и при быстрых
+ * кликах во время smooth-scroll пилюля иногда влетала сверху или снизу. Здесь
+ * координаты считаются от острова навбара — оба внутри fixed-шапки, скролл
+ * страницы на них не влияет, анимируются только x/y/width/height.
+ */
+function useNavPill(active: string) {
+  const islandRef = useRef<HTMLDivElement>(null)
+  const linksRef = useRef(new Map<string, HTMLAnchorElement>())
+  const activeRef = useRef(active)
+  const [box, setBox] = useState<PillBox | null>(null)
+
+  const measure = useCallback((instant: boolean) => {
+    const island = islandRef.current
+    const link = linksRef.current.get(activeRef.current)
+    /* Вкладка скрыта (мобильная ширина) — пилюлю не рисуем */
+    if (!island || !link || link.getClientRects().length === 0) {
+      setBox(null)
+      return
+    }
+    const i = island.getBoundingClientRect()
+    const l = link.getBoundingClientRect()
+    setBox({
+      x: l.left - i.left - island.clientLeft,
+      y: l.top - i.top - island.clientTop,
+      width: l.width,
+      height: l.height,
+      instant,
+    })
+  }, [])
+
+  useLayoutEffect(() => {
+    activeRef.current = active
+    measure(false)
+  }, [active, measure])
+
+  useEffect(() => {
+    const island = islandRef.current
+    if (!island) return
+    /* Ресайз окна и догрузка шрифта меняют ширину вкладок — подгоняем без анимации */
+    const ro = new ResizeObserver(() => measure(true))
+    ro.observe(island)
+    linksRef.current.forEach((el) => ro.observe(el))
+    return () => ro.disconnect()
+  }, [measure])
+
+  const linkRef = (href: string) => (el: HTMLAnchorElement | null) => {
+    if (el) linksRef.current.set(href, el)
+    else linksRef.current.delete(href)
   }
+
+  return { islandRef, linkRef, box }
+}
+
+function NavPill({ box, reduced }: { box: PillBox | null; reduced: boolean | null }) {
+  if (!box) return null
   return (
     <motion.span
-      layoutId="nav-pill"
-      className="nav-active-pill absolute inset-0"
-      style={{ borderRadius: 9999 }}
-      transition={pillTransition}
+      aria-hidden
+      className="nav-active-pill pointer-events-none absolute top-0 left-0 rounded-full"
+      initial={false}
+      animate={{ x: box.x, y: box.y, width: box.width, height: box.height }}
+      transition={reduced || box.instant ? { duration: 0 } : pillTransition}
     />
   )
 }
@@ -65,16 +121,17 @@ function TabHighlight({ on, reduced }: { on: boolean; reduced: boolean | null })
 function NavItem({
   href,
   active,
-  reduced,
+  linkRef,
   children,
 }: {
   href: string
   active: boolean
-  reduced: boolean | null
+  linkRef: (el: HTMLAnchorElement | null) => void
   children: ReactNode
 }) {
   return (
     <a
+      ref={linkRef}
       href={href}
       aria-current={active ? 'page' : undefined}
       className={cn(
@@ -82,8 +139,7 @@ function NavItem({
         active ? 'text-white' : 'text-subtle hover:text-fg',
       )}
     >
-      <TabHighlight on={active} reduced={reduced} />
-      <span className="relative z-10">{children}</span>
+      {children}
     </a>
   )
 }
@@ -93,6 +149,7 @@ export function Navbar() {
   const prefersReduced = useReducedMotion()
   const isDesktop = useMediaQuery('(min-width: 1024px)')
   const active = useActiveSection()
+  const pill = useNavPill(active)
 
   useBodyScrollLock(open)
 
@@ -118,9 +175,13 @@ export function Navbar() {
           open ? 'hidden lg:flex' : 'flex',
         )}
       >
-        <div className="nav-island relative flex h-14 w-full items-center justify-between rounded-full px-1.5 lg:px-2">
-          <LayoutGroup id="nav-pill">
+        <div
+          ref={pill.islandRef}
+          className="nav-island relative flex h-14 w-full items-center justify-between rounded-full px-1.5 lg:px-2"
+        >
+          <NavPill box={pill.box} reduced={prefersReduced} />
             <a
+              ref={pill.linkRef('#home')}
               href="#home"
               aria-current={active === '#home' ? 'page' : undefined}
               className={cn(
@@ -128,7 +189,6 @@ export function Navbar() {
                 active === '#home' ? 'text-white' : 'text-fg hover:text-fg',
               )}
             >
-              <TabHighlight on={active === '#home'} reduced={prefersReduced} />
               <span
                 className={cn(
                   'relative z-10 flex h-8 w-8 items-center justify-center rounded-full border transition-colors',
@@ -151,13 +211,12 @@ export function Navbar() {
                   key={link.href}
                   href={link.href}
                   active={active === link.href}
-                  reduced={prefersReduced}
+                  linkRef={pill.linkRef(link.href)}
                 >
                   {link.label}
                 </NavItem>
               ))}
             </nav>
-          </LayoutGroup>
 
           <div className="relative z-10 flex items-center gap-1">
             <Button
