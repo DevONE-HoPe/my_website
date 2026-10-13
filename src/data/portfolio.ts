@@ -14,6 +14,32 @@ export type PortfolioItem = {
 
 export const portfolioItems: PortfolioItem[] = [
   {
+    id: 'roblox-ms-autobuy',
+    title: 'Автобай Роблокс Майкрософт',
+    summary: 'Массовая покупка робуксов через Microsoft: вход, три капчи, оплата и зачисление сами.',
+    description:
+      'Скрипт массовой покупки робуксов: на вход один аккаунт Roblox или целый список, дальше он проходит по каждому и сам проводит платёж. Вход в аккаунт с решением трёх капч — Cloudflare, PerimeterX и FunCaptcha, — 2FA закрывается бэкап-кодом. Затем через аккаунт Microsoft скрипт имитирует официальный клиент Roblox, запущенный из Microsoft Store: формирует заказ, оплачивает его способом оплаты Microsoft и сам подтверждает, чтобы робуксы пришли на аккаунт. Можно купить конкретный пак или любую сумму — например, 777 робуксов: скрипт сам соберёт её из стандартных паков 80/500/1000/2000. Результаты и куки пишутся в файлы. Скриншоты обработаны ИИ: в процессе работы скрипт выводит чувствительные данные — куки, прокси, URL и токены.',
+    image: 'roblox_autobuy/cover.webp',
+    gallery: [
+      'roblox_autobuy/01_start.webp',
+      'roblox_autobuy/02_login.webp',
+      'roblox_autobuy/03_purchase.webp',
+    ],
+    price: '170 000 ₽',
+    priceType: 'fixed',
+    tags: [
+      'Python',
+      'JavaScript',
+      'aiohttp',
+      'WinRT',
+      'Microsoft Store',
+      'Cloudflare',
+      'PerimeterX',
+      'FunCaptcha',
+    ],
+    category: 'other',
+  },
+  {
     id: 'hoyo-autodonate',
     title: 'Автодонат HoYoverse: панель + публичный API',
     summary: 'Панель и API для автопополнения. Свой Chrome, 3DS, масштаб воркерами.',

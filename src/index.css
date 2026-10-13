@@ -56,6 +56,15 @@
       radial-gradient(ellipse 45% 35% at 92% 6%, rgba(240, 168, 60, 0.06), transparent 70%);
     background-attachment: fixed;
     min-height: 100vh;
+    /* Простая защита от копирования: текст не выделяется */
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* Картинки нельзя перетащить или сохранить долгим тапом */
+  img {
+    -webkit-user-drag: none;
+    -webkit-touch-callout: none;
   }
 
   h1,
