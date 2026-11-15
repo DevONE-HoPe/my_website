@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import { Menu, Send, Terminal, X } from 'lucide-react'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
-import { navLinks, profile } from '../data/content'
+import { contacts, content } from '../data/content'
+import { useLang } from '../i18n/context'
+import { LANGS } from '../i18n/lang'
 import { useActiveSection } from '../hooks/useActiveSection'
 import { useBodyScrollLock } from '../hooks/useBodyScrollLock'
 import { useMediaQuery } from '../hooks/useMediaQuery'
@@ -144,7 +146,44 @@ function NavItem({
   )
 }
 
+/** RU / EN. Выбор запоминается и меняет адрес: / или /en/. */
+function LangSwitch({ className }: { className?: string }) {
+  const { lang, setLang, t } = useLang()
+  return (
+    <div
+      role="group"
+      aria-label={t.nav.language}
+      className={cn(
+        'inline-flex h-10 items-center rounded-full border border-white/10 bg-white/5 p-1',
+        className,
+      )}
+    >
+      {LANGS.map((code) => (
+        <button
+          key={code}
+          type="button"
+          lang={code}
+          aria-pressed={lang === code}
+          onClick={() => {
+            if (code === lang) return
+            setLang(code)
+            track('lang_switch', { lang: code })
+          }}
+          className={cn(
+            'h-full rounded-full px-2.5 font-mono text-xs font-semibold uppercase tracking-wide transition-colors',
+            lang === code ? 'bg-white/15 text-fg' : 'text-muted hover:text-fg',
+          )}
+        >
+          {code}
+        </button>
+      ))}
+    </div>
+  )
+}
+
 export function Navbar() {
+  const { lang, t } = useLang()
+  const { profile, navLinks } = content[lang]
   const [open, setOpen] = useState(false)
   const prefersReduced = useReducedMotion()
   const isDesktop = useMediaQuery('(min-width: 1024px)')
@@ -204,7 +243,7 @@ export function Navbar() {
 
             <nav
               className="relative z-10 hidden items-center gap-0.5 lg:flex"
-              aria-label="Основная навигация"
+              aria-label={t.nav.main}
             >
               {navLinks.map((link) => (
                 <NavItem
@@ -219,14 +258,15 @@ export function Navbar() {
             </nav>
 
           <div className="relative z-10 flex items-center gap-1">
+            <LangSwitch />
             <Button
-              href={profile.telegram}
+              href={contacts.telegram}
               external
               onClick={() => track('telegram_click', { place: 'navbar' })}
               className="hidden h-10 !rounded-full !bg-white px-4 !py-0 !text-sm !text-[#111] !shadow-none hover:!bg-neutral-200 sm:inline-flex"
             >
               <Send size={14} strokeWidth={2.4} aria-hidden="true" />
-              Написать
+              {t.nav.write}
             </Button>
 
             <button
@@ -234,7 +274,7 @@ export function Navbar() {
               className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-fg transition-colors hover:bg-white/10 lg:hidden"
               onClick={() => setOpen((v) => !v)}
               aria-expanded={open}
-              aria-label={open ? 'Закрыть меню' : 'Открыть меню'}
+              aria-label={open ? t.nav.closeMenu : t.nav.openMenu}
             >
               {open ? <X size={18} /> : <Menu size={18} />}
             </button>
@@ -266,11 +306,13 @@ function MobileMenu({
   reduced: boolean | null
   onClose: () => void
 }) {
+  const { lang, t } = useLang()
+  const { navLinks } = content[lang]
   return (
     <motion.div
       role="dialog"
       aria-modal="true"
-      aria-label="Меню"
+      aria-label={t.nav.menu}
       initial={reduced ? false : { opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={reduced ? undefined : { opacity: 0 }}
@@ -313,7 +355,7 @@ function MobileMenu({
           className="absolute top-[max(0.75rem,env(safe-area-inset-top))] z-20 inline-flex h-10 items-center gap-2 rounded-full border border-white/12 bg-[#171717] px-4 text-sm font-medium text-fg shadow-[0_8px_24px_rgba(0,0,0,0.4)]"
         >
           <X size={16} />
-          Закрыть
+          {t.nav.close}
         </button>
 
         <motion.nav
@@ -321,12 +363,15 @@ function MobileMenu({
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={reduced ? undefined : { opacity: 0, y: 10, scale: 0.98 }}
           transition={reduced ? { duration: 0 } : { duration: 0.32, ease: easeOut }}
-          aria-label="Мобильная навигация"
+          aria-label={t.nav.mobile}
           className="nav-island relative z-10 w-full max-w-[19.5rem] overflow-y-auto rounded-[1.75rem] px-5 py-5 sm:max-w-sm"
         >
-          <p className="mb-3 font-mono text-[0.7rem] uppercase tracking-[0.18em] text-muted">
-            Меню
-          </p>
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <p className="font-mono text-[0.7rem] uppercase tracking-[0.18em] text-muted">
+              {t.nav.menu}
+            </p>
+            <LangSwitch className="h-9" />
+          </div>
           <div className="flex flex-col gap-1">
             {navLinks.map((link, i) => {
               const isActive = active === link.href
@@ -360,7 +405,7 @@ function MobileMenu({
           </div>
 
           <Button
-            href={profile.telegram}
+            href={contacts.telegram}
             external
             onClick={() => {
               track('telegram_click', { place: 'navbar_mobile' })
@@ -369,7 +414,7 @@ function MobileMenu({
             className="mt-5 w-full !rounded-full !bg-white !text-[#111] !shadow-none hover:!bg-neutral-200"
           >
             <Send size={16} strokeWidth={2.4} />
-            Написать в Telegram
+            {t.nav.writeTelegram}
           </Button>
         </motion.nav>
       </div>

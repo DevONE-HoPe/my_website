@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react'
 import { ArrowUp } from 'lucide-react'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { easeOut } from './motion/variants'
+import { useLang } from '../i18n/context'
 
 export function ScrollTop() {
+  const { t } = useLang()
   const [visible, setVisible] = useState(false)
   const prefersReduced = useReducedMotion()
 
@@ -31,7 +33,7 @@ export function ScrollTop() {
           whileHover={prefersReduced ? undefined : { y: -2 }}
           whileTap={prefersReduced ? undefined : { scale: 0.94 }}
           className="glass-strong fixed bottom-5 right-5 z-40 inline-flex h-11 w-11 items-center justify-center rounded-chip text-accent"
-          aria-label="Наверх"
+          aria-label={t.scrollTop}
         >
           <ArrowUp size={18} />
         </motion.button>

@@ -12,11 +12,13 @@ import { ResumePage } from './components/Resume'
 import { useAnimatedTitle } from './hooks/useAnimatedTitle'
 import { useHash } from './hooks/useHash'
 import { isResumeHash } from './data/resume'
+import { useLang } from './i18n/context'
 
 export default function App() {
   const hash = useHash()
   const resume = isResumeHash(hash)
-  useAnimatedTitle()
+  const { lang } = useLang()
+  useAnimatedTitle(lang)
 
   return (
     <div className="min-h-screen">

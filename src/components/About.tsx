@@ -11,13 +11,14 @@ import {
   Workflow,
   type LucideIcon,
 } from 'lucide-react'
-import { directions, legalPoints, profile, stackGroups } from '../data/content'
+import { contacts, content, type SiteContent } from '../data/content'
+import { useLang } from '../i18n/context'
 import { Section } from './ui/Section'
 import { Badge } from './ui/Badge'
 import { Card } from './ui/Card'
 import { Reveal, Stagger, StaggerItem } from './motion/Reveal'
 
-const directionIcons: Record<(typeof directions)[number]['icon'], LucideIcon> = {
+const directionIcons: Record<SiteContent['directions'][number]['icon'], LucideIcon> = {
   globe: Globe2,
   app: LayoutGrid,
   bot: Bot,
@@ -27,7 +28,7 @@ const directionIcons: Record<(typeof directions)[number]['icon'], LucideIcon> = 
   agent: Workflow,
 }
 
-const legalIcons: Record<(typeof legalPoints)[number]['icon'], LucideIcon> = {
+const legalIcons: Record<SiteContent['legalPoints'][number]['icon'], LucideIcon> = {
   file: FileText,
   badge: BadgeCheck,
   crypto: Bitcoin,
@@ -38,24 +39,17 @@ function asset(path: string) {
   return `${base}${path.replace(/^\//, '')}`
 }
 
-function pluralTools(n: number) {
-  const tail = n % 100
-  if (tail > 4 && tail < 21) return 'инструментов'
-  const last = n % 10
-  if (last === 1) return 'инструмент'
-  if (last > 1 && last < 5) return 'инструмента'
-  return 'инструментов'
-}
-
-const toolCount = stackGroups.reduce((n, group) => n + group.items.length, 0)
-
 export function About() {
+  const { lang, t } = useLang()
+  const { profile, directions, legalPoints, stackGroups } = content[lang]
+  const toolCount = stackGroups.reduce((n, group) => n + group.items.length, 0)
+
   return (
     <Section
       id="about"
-      eyebrow="Обо мне"
-      title="Кто делает вашу задачу"
-      description="Коротко и по делу: кто я, чем занимаюсь и на чём строю решения."
+      eyebrow={t.about.eyebrow}
+      title={t.about.title}
+      description={t.about.description}
     >
       <Stagger className="grid gap-4 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]" stagger={0.1}>
         <StaggerItem>
@@ -75,7 +69,7 @@ export function About() {
                   <img
                     src={asset('profile-256.jpg')}
                     srcSet={`${asset('profile-256.jpg')} 1x, ${asset('profile-512.jpg')} 2x`}
-                    alt={`${profile.name} — фото`}
+                    alt={t.about.photoAlt(profile.name)}
                     width={256}
                     height={256}
                     decoding="async"
@@ -89,7 +83,7 @@ export function About() {
                 <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
                   <h3 className="display text-2xl text-fg sm:text-3xl">{profile.name}</h3>
                   <Badge tone="amber" className="tabular">
-                    {profile.age} год
+                    {t.about.age(contacts.age)}
                   </Badge>
                 </div>
                 <p className="mt-1 text-base text-subtle">{profile.role}</p>
@@ -109,11 +103,11 @@ export function About() {
                 href="#resume"
                 className="font-medium text-accent-soft transition-colors hover:text-accent"
               >
-                Открыть резюме (RU / EN, PDF) →
+                {t.about.openResume}
               </a>
             </p>
 
-            <p className="spec-label mt-6">Направления</p>
+            <p className="spec-label mt-6">{t.about.directions}</p>
             <ul className="mt-2 border-t border-border/70">
               {directions.map((item) => {
                 const Icon = directionIcons[item.icon]
@@ -141,13 +135,13 @@ export function About() {
         <StaggerItem>
           <Card hover={false} className="p-5 sm:p-6">
             <div className="flex items-baseline justify-between gap-3">
-              <h3 className="display text-xl text-fg">Стек технологий</h3>
+              <h3 className="display text-xl text-fg">{t.about.stackTitle}</h3>
               <span className="tabular hidden shrink-0 font-mono text-xs text-muted sm:inline">
-                {toolCount} {pluralTools(toolCount)}
+                {t.about.tools(toolCount)}
               </span>
             </div>
             <p className="mt-1.5 text-base text-muted">
-              С чем стабильно собираю продукты.
+              {t.about.stackHint}
             </p>
 
             <dl className="mt-4 border-t border-border/70">
@@ -175,9 +169,9 @@ export function About() {
 
       <Reveal delay={0.08} className="mt-4 rounded-card border border-amber/25 bg-gradient-to-br from-elevated to-surface p-5 sm:p-6">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-          <p className="spec-label">Легально и удобно</p>
+          <p className="spec-label">{t.about.legalTitle}</p>
           <span className="text-sm text-muted">
-            Работаю официально — с документами и понятной оплатой.
+            {t.about.legalHint}
           </span>
         </div>
 

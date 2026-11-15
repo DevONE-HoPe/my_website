@@ -1,4 +1,6 @@
-export type ResumeLang = 'ru' | 'en'
+import type { Lang } from '../i18n/types.ts'
+
+export type ResumeLang = Lang
 
 export const resumeContacts = {
   telegram: 'https://t.me/aiogram_tgbots',
@@ -315,14 +317,13 @@ export const resumeCopy: Localized<ResumeCopy> = {
   },
 }
 
-export function resumeLangFromHash(hash: string): ResumeLang {
-  return hash.startsWith('#resume/en') ? 'en' : 'ru'
+/** Язык, явно указанный в ссылке (#resume/en, #resume/ru); без него резюме идёт на языке сайта. */
+export function resumeLangFromHash(hash: string): ResumeLang | null {
+  if (hash.startsWith('#resume/en')) return 'en'
+  if (hash.startsWith('#resume/ru')) return 'ru'
+  return null
 }
 
 export function isResumeHash(hash: string): boolean {
   return hash === '#resume' || hash.startsWith('#resume/')
-}
-
-export function resumeHashFor(lang: ResumeLang): string {
-  return lang === 'en' ? '#resume/en' : '#resume'
 }

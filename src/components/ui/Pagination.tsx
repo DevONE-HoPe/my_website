@@ -1,5 +1,6 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { cn } from '../../lib/cn'
+import { useLang } from '../../i18n/context'
 
 type Props = {
   page: number
@@ -14,12 +15,13 @@ const arrowClass =
   'inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-chip border border-border text-subtle transition-colors hover:border-accent/40 hover:text-fg disabled:pointer-events-none disabled:opacity-35'
 
 export function Pagination({ page, totalPages, onChange, summary, className }: Props) {
+  const { t } = useLang()
   if (totalPages < 2) return null
 
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1)
 
   return (
-    <nav className={cn('flex flex-col items-center gap-3', className)} aria-label="Страницы работ">
+    <nav className={cn('flex flex-col items-center gap-3', className)} aria-label={t.portfolio.pages}>
       {summary && <p className="font-mono text-sm tabular text-muted">{summary}</p>}
       <div className="flex items-center gap-2">
         <button
@@ -27,7 +29,7 @@ export function Pagination({ page, totalPages, onChange, summary, className }: P
           onClick={() => onChange(page - 1)}
           disabled={page === 1}
           className={arrowClass}
-          aria-label="Предыдущая страница"
+          aria-label={t.portfolio.prevPage}
         >
           <ChevronLeft size={18} />
         </button>
@@ -39,7 +41,7 @@ export function Pagination({ page, totalPages, onChange, summary, className }: P
               type="button"
               onClick={() => onChange(p)}
               aria-current={p === page ? 'page' : undefined}
-              aria-label={`Страница ${p}`}
+              aria-label={t.portfolio.page(p)}
               className={cn(
                 'inline-flex h-10 min-w-10 items-center justify-center rounded-chip border px-2 font-mono text-sm tabular transition-colors',
                 p === page
@@ -57,7 +59,7 @@ export function Pagination({ page, totalPages, onChange, summary, className }: P
           onClick={() => onChange(page + 1)}
           disabled={page === totalPages}
           className={arrowClass}
-          aria-label="Следующая страница"
+          aria-label={t.portfolio.nextPage}
         >
           <ChevronRight size={18} />
         </button>

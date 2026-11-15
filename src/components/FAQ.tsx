@@ -1,22 +1,25 @@
 import { useState } from 'react'
 import { Plus } from 'lucide-react'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
-import { faqItems } from '../data/content'
+import { content } from '../data/content'
+import { useLang } from '../i18n/context'
 import { Section } from './ui/Section'
 import { cn } from '../lib/cn'
 import { Reveal } from './motion/Reveal'
 import { easeOut } from './motion/variants'
 
 export function FAQ() {
+  const { lang, t } = useLang()
+  const { faqItems } = content[lang]
   const [openIndex, setOpenIndex] = useState<number | null>(0)
   const prefersReduced = useReducedMotion()
 
   return (
     <Section
       id="faq"
-      eyebrow="FAQ"
-      title="Частые вопросы"
-      description="Коротко о цене, сроках и процессе. Если чего-то нет — напишите в Telegram."
+      eyebrow={t.faq.eyebrow}
+      title={t.faq.title}
+      description={t.faq.description}
       narrow
     >
       <Reveal className="mx-auto max-w-2xl overflow-hidden rounded-card border border-border bg-surface/85">

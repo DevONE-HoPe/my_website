@@ -1,29 +1,24 @@
 import { useEffect, useState } from 'react'
 import { ArrowRight, FileText, Send } from 'lucide-react'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
-import { profile } from '../data/content'
+import { contacts, content } from '../data/content'
+import { useLang } from '../i18n/context'
 import { track } from '../lib/track'
 import { Button } from './ui/Button'
 import { easeOut, fadeUp, staggerContainer, tweenOut } from './motion/variants'
 
-/** Короткие фразы — каждая влезает в одну строку заголовка, поэтому блок не меняет высоту */
-const ROTATING = [
-  'Telegram-боты',
-  'Mini Apps',
-  'парсеры 24/7',
-  'ИИ-агенты',
-  'Android и iOS',
-]
-
-const SPEC = [
-  { label: 'Локация', value: profile.location },
-  { label: 'Опыт', value: profile.experience },
-  { label: 'Фокус', value: 'AI + Telegram' },
-  { label: 'Проектов', value: '18+' },
-  { label: 'Формат', value: 'от идеи до деплоя' },
-]
-
 export function Hero() {
+  const { lang, t } = useLang()
+  const { profile } = content[lang]
+  /* Короткие фразы — каждая влезает в одну строку заголовка, поэтому блок не меняет высоту */
+  const ROTATING = t.hero.rotating
+  const SPEC = [
+    { label: t.hero.spec.location, value: profile.location },
+    { label: t.hero.spec.experience, value: profile.experience },
+    { label: t.hero.spec.focus, value: 'AI + Telegram' },
+    { label: t.hero.spec.projects, value: '18+' },
+    { label: t.hero.spec.format, value: t.hero.spec.formatValue },
+  ]
   const [index, setIndex] = useState(0)
   const prefersReduced = useReducedMotion()
 
@@ -33,7 +28,7 @@ export function Hero() {
       setIndex((i) => (i + 1) % ROTATING.length)
     }, 2800)
     return () => window.clearInterval(id)
-  }, [prefersReduced])
+  }, [prefersReduced, ROTATING.length])
 
   return (
     <section id="home" className="relative overflow-hidden pt-28 pb-12 sm:pt-32 sm:pb-16">
@@ -59,7 +54,7 @@ export function Hero() {
                 className="dot-live inline-block h-1.5 w-1.5 rounded-full bg-amber"
                 aria-hidden
               />
-              Доступен к заказам
+              {t.hero.available}
             </motion.p>
 
             <motion.h1
@@ -67,7 +62,7 @@ export function Hero() {
               transition={tweenOut(0.45)}
               className="display text-4xl text-fg sm:text-5xl lg:text-[3.4rem]"
             >
-              Продукты под ключ:
+              {t.hero.headline}
               <span className="relative mt-1.5 grid overflow-hidden pb-[0.12em] text-accent-soft">
                 {ROTATING.map((phrase) => (
                   <span
@@ -98,8 +93,7 @@ export function Hero() {
               transition={tweenOut(0.45)}
               className="mt-5 max-w-xl text-base leading-relaxed text-subtle sm:text-lg"
             >
-              Я {profile.name} — {profile.role}. Веду проект самостоятельно: архитектура,
-              код, деплой и поддержка после запуска.
+              {t.hero.intro(profile.name, profile.role)}
             </motion.p>
 
             <motion.div
@@ -108,20 +102,20 @@ export function Hero() {
               className="mt-7 flex flex-wrap items-center gap-3"
             >
               <Button
-                href={profile.telegram}
+                href={contacts.telegram}
                 external
                 onClick={() => track('telegram_click', { place: 'hero' })}
               >
                 <Send size={16} />
-                Обсудить задачу
+                {t.hero.discuss}
               </Button>
               <Button href="#portfolio" variant="secondary">
-                Смотреть портфолио
+                {t.hero.viewPortfolio}
                 <ArrowRight size={16} />
               </Button>
               <Button href="#resume" variant="ghost">
                 <FileText size={16} />
-                Резюме
+                {t.hero.resume}
               </Button>
             </motion.div>
           </motion.div>

@@ -2,11 +2,15 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Check, Link2, Maximize2, Send, X } from 'lucide-react'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import {
-  portfolioFilters,
-  portfolioItems,
+  portfolioFilterIds,
+  portfolioFor,
+  type PortfolioFilter,
   type PortfolioItem,
 } from '../data/portfolio'
-import { profile } from '../data/content'
+import { contacts } from '../data/content'
+import { useLang } from '../i18n/context'
+import type { UiCopy } from '../i18n/ui'
+import type { Lang } from '../i18n/lang'
 import { Section } from './ui/Section'
 import { Badge } from './ui/Badge'
 import { Button } from './ui/Button'
@@ -35,26 +39,34 @@ const MOBILE_PAGE_SIZE = 5
  * Параметр text подхватывают не все клиенты Telegram; там, где он не сработает,
  * просто откроется диалог с пустым полем ввода — как у кнопки в контактах.
  */
-function telegramLinkFor(item: PortfolioItem) {
-  const text = `Здравствуйте! Смотрю работу «${item.title}» в портфолио — хочу похожий проект. Обсудим?`
-  return `${profile.telegram}?text=${encodeURIComponent(text)}`
+function telegramLinkFor(item: PortfolioItem, t: UiCopy) {
+  const text = t.portfolio.telegramMessage(item.title)
+  return `${contacts.telegram}?text=${encodeURIComponent(text)}`
 }
 
 /* Каждая работа получает свой адрес: сайт одностраничный, роутера нет, поэтому
    держим состояние модалки в хеше — этого хватает и для ссылки, и для истории */
 const HASH_PREFIX = '#work-'
 
-function itemFromHash(): PortfolioItem | null {
+function idFromHash(): string | null {
   const { hash } = window.location
   if (!hash.startsWith(HASH_PREFIX)) return null
   const id = decodeURIComponent(hash.slice(HASH_PREFIX.length))
-  return portfolioItems.find((item) => item.id === id) ?? null
+  return portfolioFor('ru').some((item) => item.id === id) ? id : null
+}
+
+function findItem(lang: Lang, id: string | null) {
+  return id ? (portfolioFor(lang).find((item) => item.id === id) ?? null) : null
 }
 
 export function Portfolio() {
-  const [filter, setFilter] = useState<(typeof portfolioFilters)[number]['id']>('all')
-  /* Ссылка вида /#work-ai-predictions открывает работу сразу при загрузке */
-  const [active, setActive] = useState<PortfolioItem | null>(itemFromHash)
+  const { lang, t } = useLang()
+  const portfolioItems = portfolioFor(lang)
+  const [filter, setFilter] = useState<PortfolioFilter>('all')
+  /* Ссылка вида /#work-ai-predictions открывает работу сразу при загрузке.
+     Храним id, а не саму работу: при смене языка карточка перерисуется с новым текстом */
+  const [activeId, setActiveId] = useState<string | null>(idFromHash)
+  const active = findItem(lang, activeId)
   const [zoomIndex, setZoomIndex] = useState<number | null>(null)
   const [copied, setCopied] = useState(false)
   const [page, setPage] = useState(1)
@@ -65,7 +77,7 @@ export function Portfolio() {
   const items = useMemo(() => {
     if (filter === 'all') return portfolioItems
     return portfolioItems.filter((item) => item.category === filter)
-  }, [filter])
+  }, [filter, portfolioItems])
 
   const totalPages = isMobile ? Math.ceil(items.length / MOBILE_PAGE_SIZE) : 1
   /* Фильтр мог укоротить список сильнее, чем текущая страница: пока состояние
@@ -108,7 +120,7 @@ export function Portfolio() {
     if (!active) return
     const onKey = (e: KeyboardEvent) => {
       /* Esc при открытом просмотре закрывает только просмотр */
-      if (e.key === 'Escape' && zoomIndex === null) setActive(null)
+      if (e.key === 'Escape' && zoomIndex === null) setActiveId(null)
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
@@ -117,28 +129,28 @@ export function Portfolio() {
   /* Под #work-… браузеру нечего искать — до секции доводим сами, чтобы
      за закрытой карточкой оказалось портфолио, а не верх страницы */
   useEffect(() => {
-    if (itemFromHash()) document.getElementById('portfolio')?.scrollIntoView()
+    if (idFromHash()) document.getElementById('portfolio')?.scrollIntoView()
   }, [])
 
   /* Кнопка «назад» закрывает карточку, а не уводит с сайта */
   useEffect(() => {
     const onPop = () => {
       setZoomIndex(null)
-      setActive(itemFromHash())
+      setActiveId(idFromHash())
     }
     window.addEventListener('popstate', onPop)
     return () => window.removeEventListener('popstate', onPop)
   }, [])
 
   const openItem = (item: PortfolioItem) => {
-    setActive(item)
+    setActiveId(item.id)
     track('work_open', { work: item.id })
     window.history.pushState({ work: item.id }, '', HASH_PREFIX + item.id)
   }
 
   const closeModal = () => {
     setZoomIndex(null)
-    setActive(null)
+    setActiveId(null)
     if (window.history.state?.work) {
       /* Свою же запись в истории и снимаем — popstate доедет до того же null */
       window.history.back()
@@ -170,30 +182,30 @@ export function Portfolio() {
     <>
       <Section
         id="portfolio"
-        eyebrow="Портфолио"
-        title="Примеры работ"
-        description="Реальные проекты с ориентиром по цене. Нажмите на карточку, чтобы открыть детали."
+        eyebrow={t.portfolio.eyebrow}
+        title={t.portfolio.title}
+        description={t.portfolio.description}
         className="border-y border-border/60 bg-surface/40"
       >
-        <Reveal className="mb-6 flex flex-wrap gap-2" role="tablist" aria-label="Фильтр портфолио">
-          {portfolioFilters.map((f) => (
+        <Reveal className="mb-6 flex flex-wrap gap-2" role="tablist" aria-label={t.portfolio.filterLabel}>
+          {portfolioFilterIds.map((id) => (
             <button
-              key={f.id}
+              key={id}
               type="button"
               role="tab"
-              aria-selected={filter === f.id}
+              aria-selected={filter === id}
               onClick={() => {
-                setFilter(f.id)
-                track('portfolio_filter', { filter: f.id })
+                setFilter(id)
+                track('portfolio_filter', { filter: id })
               }}
               className={cn(
                 'relative rounded-chip border px-3.5 py-1.5 font-mono text-sm transition-colors',
-                filter === f.id
+                filter === id
                   ? 'border-accent bg-accent text-white'
                   : 'border-border bg-transparent text-subtle hover:border-accent/40 hover:text-fg',
               )}
             >
-              {f.label}
+              {t.portfolio.filters[id]}
             </button>
           ))}
         </Reveal>
@@ -268,7 +280,7 @@ export function Portfolio() {
             page={safePage}
             totalPages={totalPages}
             onChange={goToPage}
-            summary={`${rangeStart}–${rangeEnd} из ${items.length}`}
+            summary={t.portfolio.range(rangeStart, rangeEnd, items.length)}
             className="mt-7"
           />
         )}
@@ -312,7 +324,7 @@ export function Portfolio() {
                   type="button"
                   onClick={() => setZoomIndex(0)}
                   className="group/zoom block h-full w-full cursor-zoom-in"
-                  aria-label={`${active.title} — открыть изображение`}
+                  aria-label={t.portfolio.openImage(active.title)}
                 >
                   <img
                     src={asset(active.image)}
@@ -321,7 +333,7 @@ export function Portfolio() {
                   />
                   <span className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-chip border border-white/12 bg-black/65 px-2.5 py-1 font-mono text-xs text-white/85 backdrop-blur-sm transition-colors group-hover/zoom:border-accent/50">
                     <Maximize2 size={13} />
-                    {gallery.length > 1 ? `${gallery.length} скрина` : 'Увеличить'}
+                    {gallery.length > 1 ? t.portfolio.screens(gallery.length) : t.portfolio.enlarge}
                   </span>
                 </button>
                 <div className="absolute right-3 top-3 flex items-center gap-2">
@@ -329,16 +341,16 @@ export function Portfolio() {
                     type="button"
                     onClick={copyLink}
                     className="inline-flex h-9 items-center gap-1.5 rounded-chip border border-white/10 bg-black/65 px-3 font-mono text-xs text-white backdrop-blur-sm transition-colors hover:bg-black/85"
-                    aria-label="Скопировать ссылку на работу"
+                    aria-label={t.portfolio.copyLinkLabel}
                   >
                     {copied ? <Check size={15} className="text-accent" /> : <Link2 size={15} />}
-                    {copied ? 'Скопировано' : 'Ссылка'}
+                    {copied ? t.portfolio.copied : t.portfolio.link}
                   </button>
                   <button
                     type="button"
                     onClick={closeModal}
                     className="inline-flex h-9 w-9 items-center justify-center rounded-chip border border-white/10 bg-black/65 text-white backdrop-blur-sm hover:bg-black/85"
-                    aria-label="Закрыть"
+                    aria-label={t.portfolio.close}
                   >
                     <X size={16} />
                   </button>
@@ -352,12 +364,12 @@ export function Portfolio() {
                       key={src}
                       type="button"
                       onClick={() => setZoomIndex(i)}
-                      aria-label={`Открыть скриншот ${i + 1}`}
+                      aria-label={t.portfolio.openScreenshot(i + 1)}
                       className="h-16 w-24 shrink-0 cursor-zoom-in overflow-hidden rounded-chip border border-border bg-bg transition-colors hover:border-accent/50"
                     >
                       <img
                         src={src}
-                        alt={`${active.title} — скриншот ${i + 1}`}
+                        alt={t.portfolio.screenshotAlt(active.title, i + 1)}
                         loading="lazy"
                         className="h-full w-full object-contain"
                       />
@@ -378,7 +390,7 @@ export function Portfolio() {
                   {active.description}
                 </p>
                 <div className="mt-5">
-                  <p className="spec-label mb-2">Технологии</p>
+                  <p className="spec-label mb-2">{t.portfolio.tech}</p>
                   <div className="flex flex-wrap gap-1.5">
                     {active.tags.map((tag) => (
                       <Badge key={tag} className="font-mono">
@@ -390,7 +402,7 @@ export function Portfolio() {
 
                 <div className="mt-6 border-t border-border pt-5">
                   <Button
-                    href={telegramLinkFor(active)}
+                    href={telegramLinkFor(active, t)}
                     external
                     className="w-full"
                     onClick={() => {
@@ -399,10 +411,10 @@ export function Portfolio() {
                     }}
                   >
                     <Send size={16} />
-                    Хочу такой же проект
+                    {t.portfolio.cta}
                   </Button>
                   <p className="mt-2.5 text-center text-sm text-muted">
-                    Откроется Telegram — название работы уже будет в сообщении
+                    {t.portfolio.ctaHint}
                   </p>
                 </div>
               </div>

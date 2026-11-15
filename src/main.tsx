@@ -6,6 +6,9 @@ import '@fontsource-variable/jetbrains-mono'
 import './index.css'
 import disableDevtool from 'disable-devtool'
 import App from './App.tsx'
+import { LangProvider } from './i18n/LangProvider'
+import { browserLang } from './i18n/lang'
+import { ui } from './i18n/ui'
 
 // Простая защита в проде: без правого клика, копирования и DevTools
 if (import.meta.env.PROD) {
@@ -14,12 +17,14 @@ if (import.meta.env.PROD) {
     disableSelect: true,
     disableCopy: true,
     disableCut: true,
-    rewriteHTML: 'Закройте инструменты разработчика и обновите страницу.',
+    rewriteHTML: ui[browserLang()].devtoolsBlocked,
   })
 }
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <LangProvider>
+      <App />
+    </LangProvider>
   </StrictMode>,
 )

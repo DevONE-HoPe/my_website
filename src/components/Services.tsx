@@ -7,12 +7,13 @@ import {
   Sparkles,
   type LucideIcon,
 } from 'lucide-react'
-import { services } from '../data/content'
+import { content, type SiteContent } from '../data/content'
+import { useLang } from '../i18n/context'
 import { Section } from './ui/Section'
 import { Card } from './ui/Card'
 import { Stagger, StaggerItem } from './motion/Reveal'
 
-const iconMap: Record<(typeof services)[number]['icon'], LucideIcon> = {
+const iconMap: Record<SiteContent['services'][number]['icon'], LucideIcon> = {
   bot: Bot,
   spider: ScanSearch,
   globe: Globe,
@@ -22,12 +23,14 @@ const iconMap: Record<(typeof services)[number]['icon'], LucideIcon> = {
 }
 
 export function Services() {
+  const { lang, t } = useLang()
+  const { services } = content[lang]
   return (
     <Section
       id="services"
-      eyebrow="Услуги"
-      title="Что могу сделать"
-      description="Шесть направлений. Можно взять одно или собрать продукт целиком."
+      eyebrow={t.services.eyebrow}
+      title={t.services.title}
+      description={t.services.description}
       className="border-y border-border/60 bg-surface/40"
     >
       <Stagger className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3" stagger={0.055}>

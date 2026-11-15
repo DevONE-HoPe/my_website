@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, Maximize2, X, ZoomIn, ZoomOut } from 'lucide
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch'
 import { cn } from '../../lib/cn'
+import { useLang } from '../../i18n/context'
 
 type Props = {
   /** Уже разрешённые пути к картинкам. */
@@ -27,6 +28,7 @@ export function Lightbox({ images, index, title, onIndexChange, onClose }: Props
   const touchStart = useRef<{ x: number; y: number } | null>(null)
   const imgRef = useRef<HTMLImageElement>(null)
   const many = images.length > 1
+  const { t } = useLang()
 
   const go = useCallback(
     (dir: 1 | -1) => {
@@ -96,7 +98,7 @@ export function Lightbox({ images, index, title, onIndexChange, onClose }: Props
       className="fixed inset-0 z-[80] flex flex-col bg-black/95"
       role="dialog"
       aria-modal="true"
-      aria-label={`${title} — просмотр изображения`}
+      aria-label={t.lightbox.label(title)}
       initial={prefersReduced ? false : { opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={prefersReduced ? undefined : { opacity: 0 }}
@@ -131,7 +133,7 @@ export function Lightbox({ images, index, title, onIndexChange, onClose }: Props
                   type="button"
                   onClick={() => zoomOut()}
                   className={cn(controlClass, 'hidden sm:inline-flex')}
-                  aria-label="Отдалить"
+                  aria-label={t.lightbox.zoomOut}
                 >
                   <ZoomOut size={17} />
                 </button>
@@ -139,7 +141,7 @@ export function Lightbox({ images, index, title, onIndexChange, onClose }: Props
                   type="button"
                   onClick={() => zoomIn()}
                   className={cn(controlClass, 'hidden sm:inline-flex')}
-                  aria-label="Приблизить"
+                  aria-label={t.lightbox.zoomIn}
                 >
                   <ZoomIn size={17} />
                 </button>
@@ -147,7 +149,7 @@ export function Lightbox({ images, index, title, onIndexChange, onClose }: Props
                   type="button"
                   onClick={() => resetTransform()}
                   className={controlClass}
-                  aria-label="Сбросить масштаб"
+                  aria-label={t.lightbox.reset}
                 >
                   <Maximize2 size={16} />
                 </button>
@@ -155,7 +157,7 @@ export function Lightbox({ images, index, title, onIndexChange, onClose }: Props
                   type="button"
                   onClick={onClose}
                   className={controlClass}
-                  aria-label="Закрыть просмотр"
+                  aria-label={t.lightbox.close}
                 >
                   <X size={17} />
                 </button>
@@ -178,7 +180,7 @@ export function Lightbox({ images, index, title, onIndexChange, onClose }: Props
                   <img
                     ref={imgRef}
                     src={images[index]}
-                    alt={`${title} — скриншот ${index + 1}`}
+                    alt={t.portfolio.screenshotAlt(title, index + 1)}
                     draggable={false}
                     className="max-h-full max-w-full select-none object-contain"
                   />
@@ -191,7 +193,7 @@ export function Lightbox({ images, index, title, onIndexChange, onClose }: Props
                     type="button"
                     onClick={() => go(-1)}
                     className={cn(controlClass, 'absolute left-2 top-1/2 -translate-y-1/2 sm:left-4')}
-                    aria-label="Предыдущий скриншот"
+                    aria-label={t.lightbox.prev}
                   >
                     <ChevronLeft size={20} />
                   </button>
@@ -199,7 +201,7 @@ export function Lightbox({ images, index, title, onIndexChange, onClose }: Props
                     type="button"
                     onClick={() => go(1)}
                     className={cn(controlClass, 'absolute right-2 top-1/2 -translate-y-1/2 sm:right-4')}
-                    aria-label="Следующий скриншот"
+                    aria-label={t.lightbox.next}
                   >
                     <ChevronRight size={20} />
                   </button>
@@ -215,7 +217,7 @@ export function Lightbox({ images, index, title, onIndexChange, onClose }: Props
                       key={src}
                       type="button"
                       onClick={() => onIndexChange(i)}
-                      aria-label={`Скриншот ${i + 1}`}
+                      aria-label={t.lightbox.shot(i + 1)}
                       aria-current={i === index}
                       className={cn(
                         'h-12 w-16 shrink-0 overflow-hidden rounded-chip border transition-colors sm:h-14 sm:w-20',
@@ -236,11 +238,10 @@ export function Lightbox({ images, index, title, onIndexChange, onClose }: Props
               )}
               <p className="text-center font-mono text-xs text-white/45">
                 <span className="hidden sm:inline">
-                  Колесо или двойной клик — зум, перетаскивание — панорама, клик мимо
-                  фото — закрыть
+                  {t.lightbox.hintDesktop}
                 </span>
                 <span className="sm:hidden">
-                  Пинч — зум{many ? ', свайп — кадр' : ''}, тап мимо фото — закрыть
+                  {t.lightbox.hintTouch(many)}
                 </span>
               </p>
             </div>

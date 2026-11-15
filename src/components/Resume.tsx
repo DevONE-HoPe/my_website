@@ -16,6 +16,7 @@ import { Card } from './ui/Card'
 import { Reveal } from './motion/Reveal'
 import { useHash } from '../hooks/useHash'
 import { cn } from '../lib/cn'
+import { useLang } from '../i18n/context'
 
 function ContactLink({ href, children }: { href: string; children: string }) {
   const external = href.startsWith('http') || href.startsWith('mailto:') || href.startsWith('tel:')
@@ -32,7 +33,7 @@ function ContactLink({ href, children }: { href: string; children: string }) {
 
 export function ResumePage() {
   const hash = useHash()
-  const lang = resumeLangFromHash(hash)
+  const { lang, setLang: setSiteLang } = useLang()
   const t = resumeCopy[lang]
   const pdfHref = asset(resumePdfFiles[lang])
   const [copied, setCopied] = useState<ResumeLang | null>(null)
@@ -58,20 +59,21 @@ export function ResumePage() {
     window.scrollTo(0, 0)
   }, [lang])
 
+  /* Старые ссылки #resume/en и #resume/ru переключают язык сайта, но не запоминают его */
   useEffect(() => {
-    const html = document.documentElement
-    const prev = html.lang
-    html.lang = lang
+    const fromHash = resumeLangFromHash(hash)
+    if (fromHash) setSiteLang(fromHash, { persist: false })
+  }, [hash, setSiteLang])
+
+  useEffect(() => {
     document.title = t.documentTitle
-    return () => {
-      html.lang = prev
-    }
-  }, [lang, t.documentTitle])
+  }, [t.documentTitle])
 
   const setLang = (next: typeof lang) => {
-    const nextHash = next === 'en' ? '#resume/en' : '#resume'
-    if (window.location.hash === nextHash) return
-    window.location.hash = nextHash
+    /* Снимаем явный язык из хеша, иначе эффект выше вернёт его обратно */
+    if (window.location.hash !== '#resume') window.location.replace('#resume')
+    if (next === lang) return
+    setSiteLang(next)
     track('resume_lang', { lang: next })
   }
 

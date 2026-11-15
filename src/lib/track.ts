@@ -20,6 +20,8 @@ declare global {
 const YM_COUNTER = 102742700
 
 export type TrackEvent =
+  /** Переключили язык сайта (RU / EN) */
+  | 'lang_switch'
   /** Открыли карточку работы */
   | 'work_open'
   /** Из карточки работы нажали «Хочу такой же проект» */

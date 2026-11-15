@@ -1,4 +1,5 @@
-import { processSteps } from '../data/content'
+import { content } from '../data/content'
+import { useLang } from '../i18n/context'
 import { cn } from '../lib/cn'
 import { Section } from './ui/Section'
 import { Stagger, StaggerItem } from './motion/Reveal'
@@ -11,12 +12,14 @@ import { Stagger, StaggerItem } from './motion/Reveal'
 const CONNECTOR = ['hidden sm:block', 'hidden lg:block', 'hidden sm:block', 'hidden']
 
 export function Process() {
+  const { lang, t } = useLang()
+  const { processSteps } = content[lang]
   return (
     <Section
       id="process"
-      eyebrow="Процесс"
-      title="Как идёт работа"
-      description="Четыре этапа — без лишней бюрократии, с понятным результатом на каждом шаге."
+      eyebrow={t.process.eyebrow}
+      title={t.process.title}
+      description={t.process.description}
     >
       <Stagger
         as="ol"
