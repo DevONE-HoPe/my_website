@@ -5,7 +5,7 @@ export const contacts = {
   // square renditions live in /public: profile-256|512.jpg|webp (source: profile.jpg)
   telegram: 'https://t.me/aiogram_tgbots',
   telegramHandle: '@aiogram_tgbots',
-  age: 21,
+  age: 22,
 }
 
 type DirectionIcon = 'globe' | 'app' | 'bot' | 'scan' | 'phone' | 'spark' | 'agent'
